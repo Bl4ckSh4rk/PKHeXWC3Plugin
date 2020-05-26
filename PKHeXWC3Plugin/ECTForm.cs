@@ -66,11 +66,19 @@ namespace WC3Plugin
                 sfd.Title = "Save e-Card Trainer file";
                 sfd.FilterIndex = 1;
 
-                if (sfd.ShowDialog() == DialogResult.OK)
-                {
-                    File.WriteAllBytes(sfd.FileName, sav.GetData(sav.GetBlockOffset(Block) + Offset, Length));
+                byte[] data = sav.GetData(sav.GetBlockOffset(Block) + Offset, Length);
 
-                    Close();
+                if (!data.IsRangeAll((byte)0, 0, data.Length))
+                {
+                    if (sfd.ShowDialog() == DialogResult.OK)
+                    {
+                        File.WriteAllBytes(sfd.FileName, data);
+                        Close();
+                    }
+                }
+                else
+                {
+                    MessageBox.Show("There is no ECT data in this save file.");
                 }
             }
         }

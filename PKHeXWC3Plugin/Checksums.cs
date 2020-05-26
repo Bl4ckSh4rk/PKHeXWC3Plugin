@@ -2,6 +2,28 @@
 {
     public static class Checksums
     {
+        private static readonly uint Offset_WC3_WC = 0x4;
+        private static readonly uint Length_WC3_EU = 0x58C;
+        private static readonly uint Length_WC3_JAP = 0x4E4;
+        private static readonly uint Length_WC3_WC_EU = 0x150;
+        private static readonly uint Length_WC3_WC_JAP = 0xA8;
+        private static readonly uint Offset_WC3_Script_EU = 0x1A4;
+        private static readonly uint Offset_WC3_Script_JAP = 0xFC;
+        private static readonly uint Offset_WC3_Script_Checksum_EU = 0x1A0;
+        private static readonly uint Offset_WC3_Script_Checksum_JAP = 0xF8;
+        private static readonly uint Length_WC3_Script = 0x3EC;
+
+        private static readonly uint Offset_ME3 = 0x4;
+        private static readonly uint Length_ME3 = 0x3EC;
+
+        private static readonly uint Length_ECB_RS = 0x530;
+        private static readonly uint Length_ECB_E = 0x34;
+
+        private static readonly uint Length_ECT = 0xBC;
+
+        private static readonly uint Offset_WCN = 0x4;
+        private static readonly uint Length_WCN = 0xE4;
+
         public static byte[] FixWC3Checksum(byte[] data)
         {
             ushort chk1 = GetWC3ChecksumWC(data);
@@ -9,18 +31,25 @@
 
             data[0] = (byte)(chk1 & 0xFF);
             data[1] = (byte)(chk1 >> 8);
-            data[(data.Length == 0x4E4 ? 0xF8 : 0x1A0)] = (byte)(chk2 & 0xFF);
-            data[(data.Length == 0x4E4 ? 0xF8 : 0x1A0) + 1] = (byte)(chk2 >> 8);
+            data[(data.Length == Length_WC3_JAP ? Offset_WC3_Script_Checksum_JAP : Offset_WC3_Script_Checksum_EU)] = (byte)(chk2 & 0xFF);
+            data[(data.Length == Length_WC3_JAP ? Offset_WC3_Script_Checksum_JAP : Offset_WC3_Script_Checksum_EU) + 1] = (byte)(chk2 >> 8);
 
             return data;
         }
 
         public static byte[] FixME3Checksum(byte[] data)
         {
-            uint chk = GetME3Checksum(data);
+            ushort chk1 = GetME3Checksum(data);
 
-            data[0] = (byte)(chk & 0xFF);
-            data[1] = (byte)(chk >> 8);
+            data[0] = (byte)(chk1 & 0xFF);
+            data[1] = (byte)(chk1 >> 8);
+
+            if (data.Length == Length_ME3 + 8)
+            {
+                ushort chk2 = (ushort)(data[Length_ME3 + 4] + data[Length_ME3 + 5] + data[Length_ME3 + 6] + data[Length_ME3 + 7]);
+                data[Length_ME3] = (byte)(chk2 & 0xFF);
+                data[Length_ME3 + 1] = (byte)(chk2 >> 8);
+            }
 
             return data;
         }
@@ -49,7 +78,7 @@
 
         public static byte[] FixECBChecksum(byte[] data)
         {
-            uint chk = data.Length == 0x530 ? GetECBChecksumRS(data) : GetECBChecksumE(data);
+            uint chk = GetECBChecksum(data);
 
             data[data.Length - 4] = (byte)(chk & 0xFF);
             data[data.Length - 3] = (byte)(chk >> 8);
@@ -59,26 +88,26 @@
 
         public static ushort GetWC3ChecksumWC(byte[] data)
         {
-            return GetWC3Checksum(data, 4, (uint)(data.Length == 0x4E4 ? 0xA4 : 0x14C));
+            return GetWC3Checksum(data, Offset_WC3_WC, (data.Length == Length_WC3_JAP ? Length_WC3_WC_JAP : Length_WC3_WC_EU) - 4);
         }
 
         public static ushort GetWC3ChecksumScript(byte[] data)
         {
-            return GetWC3Checksum(data, (uint)(data.Length == 0x4E4 ? 0xFC : 0x1A4), 0x3E8);
+            return GetWC3Checksum(data, (data.Length == Length_WC3_JAP ? Offset_WC3_Script_JAP : Offset_WC3_Script_EU), Length_WC3_Script - 4);
         }
 
         public static ushort GetWN3Checksum(byte[] data)
         {
-            return GetWC3Checksum(data, 4, 224);
+            return GetWC3Checksum(data, Offset_WCN, Length_WCN - 4);
         }
 
         private static ushort GetME3Checksum(byte[] data)
         {
             ushort chk = 0;
 
-            for (int i = 4; i < ((data.Length) / 2); i++)
+            for (uint i = Offset_ME3; i < Length_ME3; i++)
             {
-                chk += (ushort)(data[i * 2] + (ushort)(data[i * 2 + 1] << 8));
+                chk += data[i];
             }
 
             return chk;
@@ -88,36 +117,34 @@
         {
             uint chk = 0;
 
-            for (int i = 0; i < ((data.Length - 4) / 4); i++)
+            for (int i = 0; i < Length_ECT - 4; i+=4)
             {
-                chk += data[i * 4] + (uint)(data[i * 4 + 1] << 8) + (uint)(data[i * 4 + 2] << 16) + (uint)(data[i * 4 + 3] << 24);
+                chk += data[i] + (uint)(data[i + 1] << 8) + (uint)(data[i + 2] << 16) + (uint)(data[i + 3] << 24);
             }
 
             return chk & 0xFFFFFFFF;
         }
 
-        public static ushort GetECBChecksumRS(byte[] data)
+        public static ushort GetECBChecksum(byte[] data)
         {
             ushort chk = 0;
 
-            for (int i = 0; i < data.Length - 4; i++)
+            if (data.Length == Length_ECB_RS)
             {
-                if (i < 0xC ||i  >= 0x14)
+                for (int i = 0; i < Length_ECB_RS - 4; i++)
+                {
+                    if (i < 0xC || i >= 0x14)
+                        chk += (ushort)(data[i] & 0xFF);
+                }
+            }
+            else
+            {
+                for (int i = 0; i < Length_ECB_E - 4; i++)
+                {
                     chk += (ushort)(data[i] & 0xFF);
+                }
             }
             
-            return chk;
-        }
-
-        public static ushort GetECBChecksumE(byte[] data)
-        {
-            ushort chk = 0;
-
-            for (int i = 0; i < data.Length - 4; i++)
-            {
-                chk += (ushort)(data[i] & 0xFF);
-            }
-
             return chk;
         }
 

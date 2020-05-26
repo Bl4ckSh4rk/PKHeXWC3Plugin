@@ -12,7 +12,7 @@ namespace WC3Plugin
         private GameVersion Version;
 
         private static readonly int Block = 4;
-        private static readonly int Length = 1004;
+        private static readonly int Length = 1012;
         private static readonly int Offset_RS = 0x810;
         private static readonly int Offset_E = 0x8A8;
 
@@ -41,7 +41,7 @@ namespace WC3Plugin
                 {
                     long fileSize = new FileInfo(ofd.FileName).Length;
 
-                    if (fileSize == Length)
+                    if (fileSize == Length || fileSize == Length - 8)
                     {
                         sav.SetData(Checksums.FixME3Checksum(File.ReadAllBytes(ofd.FileName)), sav.GetBlockOffset(Block) + Offset);
                     }
@@ -63,11 +63,19 @@ namespace WC3Plugin
                 sfd.Title = "Save Mystery Event file";
                 sfd.FilterIndex = 1;
 
-                if (sfd.ShowDialog() == DialogResult.OK)
-                {
-                    File.WriteAllBytes(sfd.FileName, sav.GetData(sav.GetBlockOffset(Block) + Offset, Length));
+                byte[] data = sav.GetData(sav.GetBlockOffset(Block) + Offset, Length);
 
-                    Close();
+                if (!data.IsRangeAll((byte)0, 0, data.Length))
+                {
+                    if (sfd.ShowDialog() == DialogResult.OK)
+                    {
+                        File.WriteAllBytes(sfd.FileName, data);
+                        Close();
+                    }
+                }
+                else
+                {
+                    MessageBox.Show("There is no ME3 data in this save file.");
                 }
             }
         }

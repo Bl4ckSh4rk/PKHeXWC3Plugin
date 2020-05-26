@@ -70,11 +70,19 @@ namespace WC3Plugin
                 sfd.Title = "Save Wonder News file";
                 sfd.FilterIndex = 1;
 
-                if (sfd.ShowDialog() == DialogResult.OK)
-                {
-                    File.WriteAllBytes(sfd.FileName, sav.GetData(sav.GetBlockOffset(Block) + Offset, Length));
+                byte[] data = sav.GetData(sav.GetBlockOffset(Block) + Offset, Length);
 
-                    Close();
+                if (!data.IsRangeAll((byte)0, 0, data.Length))
+                {
+                    if (sfd.ShowDialog() == DialogResult.OK)
+                    {
+                        File.WriteAllBytes(sfd.FileName, data);
+                        Close();
+                    }
+                }
+                else
+                {
+                    MessageBox.Show("There is no WN3 data in this save file.");
                 }
             }
         }

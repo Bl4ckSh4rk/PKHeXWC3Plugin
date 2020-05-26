@@ -86,18 +86,24 @@ namespace WC3Plugin
                 sfd.Title = "Save Mystery Gift file";
                 sfd.FilterIndex = 1;
 
-                if (sfd.ShowDialog() == DialogResult.OK)
+                byte[] data = new byte[Length];
+                byte[] wc = sav.GetData(sav.GetBlockOffset(Block) + Offset_WC, Length_WC);
+                byte[] script = sav.GetData(sav.GetBlockOffset(Block) + Offset_Script, Length_Script);
+
+                Array.Copy(wc, 0, data, 0, Length_WC);
+                Array.Copy(script, 0, data, Offset_Script_WC3, Length_Script);
+
+                if (!data.IsRangeAll((byte)0, 0, data.Length))
                 {
-                    byte[] data = new byte[Length];
-                    byte[] wc = sav.GetData(sav.GetBlockOffset(Block) + Offset_WC, Length_WC);
-                    byte[] script = sav.GetData(sav.GetBlockOffset(Block) + Offset_Script, Length_Script);
-
-                    Array.Copy(wc, 0, data, 0, Length_WC);
-                    Array.Copy(script, 0 , data, Offset_Script_WC3, Length_Script);
-
-                    File.WriteAllBytes(sfd.FileName, data);
-
-                    Close();
+                    if (sfd.ShowDialog() == DialogResult.OK)
+                    {
+                        File.WriteAllBytes(sfd.FileName, data);
+                        Close();
+                    }
+                }
+                else
+                {
+                    MessageBox.Show("There is no WC3 data in this save file.");
                 }
             }
         }
