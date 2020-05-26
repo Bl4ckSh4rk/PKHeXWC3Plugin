@@ -11,7 +11,7 @@ namespace WC3Plugin
         private int Offset;
         private GameVersion Version;
 
-        private static readonly int Block = 4;
+        private static readonly int Block = 0;
         private static readonly int Length = 188;
         private static readonly int Offset_RS = 0x498;
         private static readonly int Offset_E = 0xBEC;
