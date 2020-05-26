@@ -60,10 +60,10 @@ namespace WC3Plugin
                     {
                         byte[] data = Checksums.FixWC3Checksum(File.ReadAllBytes(ofd.FileName));
                         byte[] wc = new byte[Length_WC];
-                        byte[] script = new byte[Length_WC];
+                        byte[] script = new byte[Length_Script];
 
                         Array.Copy(data, 0, wc, 0, Length_WC);
-                        Array.Copy(data, Offset_Script_WC3, script, 0, Length_WC);
+                        Array.Copy(data, Offset_Script_WC3, script, 0, Length_Script);
 
                         sav.SetData(wc, sav.GetBlockOffset(Block) + Offset_WC);
                         sav.SetData(script, sav.GetBlockOffset(Block) + Offset_Script);
