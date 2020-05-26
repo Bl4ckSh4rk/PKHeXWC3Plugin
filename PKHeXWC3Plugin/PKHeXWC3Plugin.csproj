@@ -1,0 +1,99 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{2476BB99-4893-48D5-9D12-EB22E06662A3}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>WC3Plugin</RootNamespace>
+    <AssemblyName>WC3Plugin</AssemblyName>
+    <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="PKHeX.Core, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\PKHeX.Core.20.4.15\lib\net46\PKHeX.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="WC3Plugin.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ECBForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ECBForm.Designer.cs">
+      <DependentUpon>ECBForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ECTForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ECTForm.Designer.cs">
+      <DependentUpon>ECTForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ME3Form.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ME3Form.Designer.cs">
+      <DependentUpon>ME3Form.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Checksums.cs" />
+    <Compile Include="WC3Form.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="WC3Form.Designer.cs">
+      <DependentUpon>WC3Form.cs</DependentUpon>
+    </Compile>
+    <Compile Include="WN3Form.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="WN3Form.Designer.cs">
+      <DependentUpon>WN3Form.cs</DependentUpon>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="ECBForm.resx">
+      <DependentUpon>ECBForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ECTForm.resx">
+      <DependentUpon>ECTForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ME3Form.resx">
+      <DependentUpon>ME3Form.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="WC3Form.resx">
+      <DependentUpon>WC3Form.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="WN3Form.resx">
+      <DependentUpon>WN3Form.cs</DependentUpon>
+    </EmbeddedResource>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>
