@@ -22,7 +22,6 @@
         private static readonly uint Length_ECT = 0xBC;
 
         private static readonly uint Offset_WCN = 0x4;
-        private static readonly uint Length_WCN = 0xE4;
 
         public static byte[] FixWC3Checksum(byte[] data)
         {
@@ -98,7 +97,7 @@
 
         public static ushort GetWN3Checksum(byte[] data)
         {
-            return GetWC3Checksum(data, Offset_WCN, Length_WCN - 4);
+            return GetWC3Checksum(data, Offset_WCN, (uint)(data.Length - 4));
         }
 
         private static ushort GetME3Checksum(byte[] data)

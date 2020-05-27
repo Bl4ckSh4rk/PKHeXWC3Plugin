@@ -13,10 +13,10 @@ namespace WC3Plugin
         private GameVersion Version;
 
         private static readonly int Block = 4;
-        private static readonly int Length_EU = 228;
-        private static readonly int Length_JAP = 448;
-        private static readonly int Offset_E = 0x2A0;
-        private static readonly int Offset_FRLG = 0x3AC;
+        private static readonly int Length_EU = 448;
+        private static readonly int Length_JAP = 228;
+        private static readonly int Offset_E = 0x3AC;
+        private static readonly int Offset_FRLG = 0x2A0;
 
         public WN3Form(SAV3 sav)
         {

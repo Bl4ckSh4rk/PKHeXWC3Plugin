@@ -77,6 +77,7 @@
             this.LangEUButton.TabStop = true;
             this.LangEUButton.Text = "EU/US";
             this.LangEUButton.UseVisualStyleBackColor = true;
+            this.LangEUButton.CheckedChanged += new System.EventHandler(this.LangEUButton_CheckedChanged);
             // 
             // LangJAPButton
             // 
@@ -87,6 +88,7 @@
             this.LangJAPButton.TabIndex = 2;
             this.LangJAPButton.Text = "JAP";
             this.LangJAPButton.UseVisualStyleBackColor = true;
+            this.LangJAPButton.CheckedChanged += new System.EventHandler(this.LangJAPButton_CheckedChanged);
             // 
             // WN3Form
             // 
