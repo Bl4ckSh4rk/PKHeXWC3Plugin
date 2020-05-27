@@ -61,7 +61,7 @@ namespace WC3Plugin
             if (Version == GameVersion.E || Version == GameVersion.FR || Version == GameVersion.FR || Version == GameVersion.LG || Version == GameVersion.FRLG)
                 new WC3Form((SAV3)SaveFileEditor.SAV).ShowDialog();
             else
-                MessageBox.Show("Mystery Gifts (MC3) are only available for Emerald, FireRed and LeafGreen!", "Error");
+                MessageBox.Show("Mystery Gifts (MC3) are only available for Emerald, FireRed and LeafGreen!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
         }
 
         private void OpenME3Form()
@@ -70,7 +70,7 @@ namespace WC3Plugin
             if (Version == GameVersion.R || Version == GameVersion.S || Version == GameVersion.E || Version == GameVersion.RS || Version == GameVersion.RSE)
                 new ME3Form((SAV3)SaveFileEditor.SAV).ShowDialog();
             else
-                MessageBox.Show("Mystery Events (ME3) are only available for Ruby, Sapphire and Emerald!", "Error");
+                MessageBox.Show("Mystery Events (ME3) are only available for Ruby, Sapphire and Emerald!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
         }
 
         private void OpenECBForm()
@@ -79,7 +79,7 @@ namespace WC3Plugin
             if (Version == GameVersion.R || Version == GameVersion.S || Version == GameVersion.E || Version == GameVersion.RS || Version == GameVersion.RSE)
                 new ECBForm((SAV3)SaveFileEditor.SAV).ShowDialog();
             else
-                MessageBox.Show("e-Card Berries (ECB) are only available for Ruby, Sapphire and Emerald!", "Error");
+                MessageBox.Show("e-Card Berries (ECB) are only available for Ruby, Sapphire and Emerald!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
         }
 
         private void OpenECTForm()
@@ -89,7 +89,7 @@ namespace WC3Plugin
                 || Version == GameVersion.FR || Version == GameVersion.FR || Version == GameVersion.LG || Version == GameVersion.FRLG)
                 new ECTForm((SAV3)SaveFileEditor.SAV).ShowDialog();
             else
-                MessageBox.Show("e-Card Trainers (ECT) are only available for Ruby, Sapphire, Emerald, FireRed and LeafGreen!", "Error");
+                MessageBox.Show("e-Card Trainers (ECT) are only available for Ruby, Sapphire, Emerald, FireRed and LeafGreen!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
         }
 
         private void OpenWN3Form()
@@ -98,7 +98,7 @@ namespace WC3Plugin
             if (Version == GameVersion.E || Version == GameVersion.FR || Version == GameVersion.FR || Version == GameVersion.LG || Version == GameVersion.FRLG)
                 new WN3Form((SAV3)SaveFileEditor.SAV).ShowDialog();
             else
-                MessageBox.Show("Wonder News (WN3) are only available for Emerald, FireRed and LeafGreen!", "Error");
+                MessageBox.Show("Wonder News (WN3) are only available for Emerald, FireRed and LeafGreen!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
         }
 
         public void NotifySaveLoaded()

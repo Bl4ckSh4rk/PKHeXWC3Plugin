@@ -34,6 +34,7 @@ namespace WC3Plugin
 
         private void ECTImportButton_Click(object sender, EventArgs e)
         {
+            bool success = true;
             using (var ofd = new OpenFileDialog())
             {
                 ofd.Filter = "ECT (*.ect)|*.ect|All files (*.*)|*.*";
@@ -46,20 +47,34 @@ namespace WC3Plugin
 
                     if (fileSize == Length)
                     {
-                        sav.SetData(Checksums.FixECTChecksum(File.ReadAllBytes(ofd.FileName)), sav.GetBlockOffset(Block) + Offset);
+                        try
+                        {
+                            sav.SetData(Checksums.FixECTChecksum(File.ReadAllBytes(ofd.FileName)), sav.GetBlockOffset(Block) + Offset);
+
+                            success = true;
+                        }
+                        catch (Exception)
+                        {
+                            MessageBox.Show("Unable to read e-Card Trainer file.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        }
                     }
                     else
                     {
-                        MessageBox.Show($"Invalid file size ({fileSize} bytes)! Expected {Length} bytes.");
+                        MessageBox.Show($"Invalid file size ({fileSize} bytes). Expected {Length} bytes.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     }
+                }
 
+                if (success)
+                {
                     Close();
+                    MessageBox.Show("e-Card Trainer imported!", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
             }
         }
 
         private void ECTExportButton_Click(object sender, EventArgs e)
         {
+            bool success = false;
             using (var sfd = new SaveFileDialog())
             {
                 sfd.Filter = "ECT (*.ect)|*.ect|All files (*.*)|*.*";
@@ -72,13 +87,27 @@ namespace WC3Plugin
                 {
                     if (sfd.ShowDialog() == DialogResult.OK)
                     {
-                        File.WriteAllBytes(sfd.FileName, data);
-                        Close();
+                        try
+                        {
+                            File.WriteAllBytes(sfd.FileName, data);
+
+                            success = true;
+                        }
+                        catch (Exception)
+                        {
+                            MessageBox.Show("Unable to write e-Card Trainer file.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        }
                     }
                 }
                 else
                 {
-                    MessageBox.Show("There is no ECT data in this save file.");
+                    MessageBox.Show("There is no e-Card Trainer in this save file.", "", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
+
+                if (success)
+                {
+                    Close();
+                    MessageBox.Show($"e-Card Trainer exported to {sfd.FileName}!", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
             }
         }

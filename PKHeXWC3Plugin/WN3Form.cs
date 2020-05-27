@@ -38,6 +38,7 @@ namespace WC3Plugin
 
         private void WN3ImportButton_Click(object sender, EventArgs e)
         {
+            bool success = false;
             using (var ofd = new OpenFileDialog())
             {
                 ofd.Filter = "WN3 (*.wn3)|*.wn3|All files (*.*)|*.*";
@@ -50,20 +51,34 @@ namespace WC3Plugin
 
                     if (fileSize == Length)
                     {
-                        sav.SetData(Checksums.FixWN3Checksum(File.ReadAllBytes(ofd.FileName)), sav.GetBlockOffset(Block) + Offset);
+                        try
+                        {
+                            sav.SetData(Checksums.FixWN3Checksum(File.ReadAllBytes(ofd.FileName)), sav.GetBlockOffset(Block) + Offset);
+
+                            success = true;
+                        }
+                        catch (Exception)
+                        {
+                            MessageBox.Show("Unable to read Wonder News file.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        }
                     }
                     else
                     {
-                        MessageBox.Show($"Invalid file size ({fileSize} bytes)! Expected {Length} bytes.");
+                        MessageBox.Show($"Invalid file size ({fileSize} bytes). Expected {Length} bytes.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     }
+                }
 
+                if (success)
+                {
                     Close();
+                    MessageBox.Show("Wonder News imported!", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
             }
         }
 
         private void WN3ExportButton_Click(object sender, EventArgs e)
         {
+            bool success = false;
             using (var sfd = new SaveFileDialog())
             {
                 sfd.Filter = "WN3 (*.wn3)|*.wn3|All files (*.*)|*.*";
@@ -76,13 +91,27 @@ namespace WC3Plugin
                 {
                     if (sfd.ShowDialog() == DialogResult.OK)
                     {
-                        File.WriteAllBytes(sfd.FileName, data);
-                        Close();
+                        try
+                        {
+                            File.WriteAllBytes(sfd.FileName, data);
+
+                            success = true;
+                        }
+                        catch (Exception)
+                        {
+                            MessageBox.Show("Unable to write Wonder News file.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        }
                     }
                 }
                 else
                 {
-                    MessageBox.Show("There is no WN3 data in this save file.");
+                    MessageBox.Show("There is no Wonder News in this save file.", "", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
+
+                if (success)
+                {
+                    Close();
+                    MessageBox.Show($"Wonder News exported to {sfd.FileName}!", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
             }
         }

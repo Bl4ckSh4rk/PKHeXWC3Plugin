@@ -46,6 +46,7 @@ namespace WC3Plugin
 
         private void WC3ImportButton_Click(object sender, EventArgs e)
         {
+            bool success = false;
             using (var ofd = new OpenFileDialog())
             {
                 ofd.Filter = "WC3 (*.wc3)|*.wc3|All files (*.*)|*.*";
@@ -58,28 +59,42 @@ namespace WC3Plugin
 
                     if (fileSize == Length)
                     {
-                        byte[] data = Checksums.FixWC3Checksum(File.ReadAllBytes(ofd.FileName));
-                        byte[] wc = new byte[Length_WC];
-                        byte[] script = new byte[Length_Script];
+                        try
+                        {
+                            byte[] data = Checksums.FixWC3Checksum(File.ReadAllBytes(ofd.FileName));
+                            byte[] wc = new byte[Length_WC];
+                            byte[] script = new byte[Length_Script];
 
-                        Array.Copy(data, 0, wc, 0, Length_WC);
-                        Array.Copy(data, Offset_Script_WC3, script, 0, Length_Script);
+                            Array.Copy(data, 0, wc, 0, Length_WC);
+                            Array.Copy(data, Offset_Script_WC3, script, 0, Length_Script);
 
-                        sav.SetData(wc, sav.GetBlockOffset(Block) + Offset_WC);
-                        sav.SetData(script, sav.GetBlockOffset(Block) + Offset_Script);
+                            sav.SetData(wc, sav.GetBlockOffset(Block) + Offset_WC);
+                            sav.SetData(script, sav.GetBlockOffset(Block) + Offset_Script);
+
+                            success = true;
+                        }
+                        catch (Exception)
+                        {
+                            MessageBox.Show("Unable to read Mystery Gift file.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        }
                     }
                     else
                     {
-                        MessageBox.Show($"Invalid file size ({fileSize} bytes)! Expected {Length} bytes.");
+                        MessageBox.Show($"Invalid file size ({fileSize} bytes). Expected {Length} bytes.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     }
+                }
 
+                if (success)
+                {
                     Close();
+                    MessageBox.Show("Mystery Gift imported!", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
             }
         }
 
         private void WC3ExportButton_Click(object sender, EventArgs e)
         {
+            bool success = false;
             using (var sfd = new SaveFileDialog())
             {
                 sfd.Filter = "WC3 (*.wc3)|*.wc3|All files (*.*)|*.*";
@@ -97,13 +112,27 @@ namespace WC3Plugin
                 {
                     if (sfd.ShowDialog() == DialogResult.OK)
                     {
-                        File.WriteAllBytes(sfd.FileName, data);
-                        Close();
+                        try
+                        {
+                            File.WriteAllBytes(sfd.FileName, data);
+
+                            success = true;
+                        }
+                        catch (Exception)
+                        {
+                            MessageBox.Show("Unable to write Mystery Gift file.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        }
                     }
                 }
                 else
                 {
-                    MessageBox.Show("There is no WC3 data in this save file.");
+                    MessageBox.Show("There is no Mystery Gift in this save file.", "", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
+
+                if (success)
+                {
+                    Close();
+                    MessageBox.Show($"Mystery Gift exported to {sfd.FileName}!", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
             }
         }
