@@ -76,17 +76,18 @@ namespace WC3Plugin
         private void OpenECBForm()
         {
             GameVersion Version = ((SAV3)SaveFileEditor.SAV).Version;
-            if (Version == GameVersion.R || Version == GameVersion.S || Version == GameVersion.E || Version == GameVersion.RS || Version == GameVersion.RSE)
+            if (Version == GameVersion.R || Version == GameVersion.S || Version == GameVersion.E || Version == GameVersion.RS || Version == GameVersion.RSE
+                || Version == GameVersion.FR || Version == GameVersion.LG || Version == GameVersion.FRLG)
                 new ECBForm((SAV3)SaveFileEditor.SAV).ShowDialog();
             else
-                MessageBox.Show("e-Card Berries (ECB) are only available for Ruby, Sapphire and Emerald!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show("e-Card Berries (ECB) are only available for Ruby, Sapphire, Emerald, FireRed and LeafGreen!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
         }
 
         private void OpenECTForm()
         {
             GameVersion Version = ((SAV3)SaveFileEditor.SAV).Version;
             if (Version == GameVersion.R || Version == GameVersion.S || Version == GameVersion.E || Version == GameVersion.RS || Version == GameVersion.RSE
-                || Version == GameVersion.FR || Version == GameVersion.FR || Version == GameVersion.LG || Version == GameVersion.FRLG)
+                || Version == GameVersion.FR || Version == GameVersion.LG || Version == GameVersion.FRLG)
                 new ECTForm((SAV3)SaveFileEditor.SAV).ShowDialog();
             else
                 MessageBox.Show("e-Card Trainers (ECT) are only available for Ruby, Sapphire, Emerald, FireRed and LeafGreen!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);

@@ -14,9 +14,10 @@ namespace WC3Plugin
 
         private static readonly int Block = 4;
         private static readonly int Length_RS = 1328;
-        private static readonly int Length_E = 52;
+        private static readonly int Length_FRLGE = 52;
         private static readonly int Offset_RS = 0x2E0;
         private static readonly int Offset_E = 0x378;
+        private static readonly int Offset_FRLG = 0x26C;
 
         public ECBForm(SAV3 sav)
         {
@@ -30,8 +31,13 @@ namespace WC3Plugin
             }
             else if (Version == GameVersion.E)
             {
-                Length = Length_E;
+                Length = Length_FRLGE;
                 Offset = Offset_E;
+            }
+            else if (Version == GameVersion.FR || Version == GameVersion.LG || Version == GameVersion.FRLG)
+            {
+                Length = Length_FRLGE;
+                Offset = Offset_FRLG;
             }
 
             InitializeComponent();

@@ -4,7 +4,7 @@ This includes the following:
 - Mystery Gifts (WC3) for FireRed, LeafGreen and Emerald
 - Mystery Events (ME3) for Ruby, Sapphire and Emerald
 - e-Card Trainers (ECT) for all generation 3 games
-- e-Card Berries (ECB) for Ruby, Sapphire and Emerald
+- e-Card Berries (ECB) for all generation 3 games
 - Wonder News (WN3) for FireRed, LeafGreen and Emerald
 
 All checksums are fixed on import.
