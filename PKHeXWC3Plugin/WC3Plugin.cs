@@ -57,7 +57,7 @@ namespace WC3Plugin
 
         private void OpenWC3Form()
         {
-            GameVersion Version = ((SAV3)SaveFileEditor.SAV).Version;
+            GameVersion Version = SaveFileEditor.SAV.Version;
             if (Version == GameVersion.E || Version == GameVersion.FR || Version == GameVersion.FR || Version == GameVersion.LG || Version == GameVersion.FRLG)
                 new WC3Form((SAV3)SaveFileEditor.SAV).ShowDialog();
             else
@@ -66,7 +66,7 @@ namespace WC3Plugin
 
         private void OpenME3Form()
         {
-            GameVersion Version = ((SAV3)SaveFileEditor.SAV).Version;
+            GameVersion Version = SaveFileEditor.SAV.Version;
             if (Version == GameVersion.R || Version == GameVersion.S || Version == GameVersion.E || Version == GameVersion.RS || Version == GameVersion.RSE)
                 new ME3Form((SAV3)SaveFileEditor.SAV).ShowDialog();
             else
@@ -75,7 +75,7 @@ namespace WC3Plugin
 
         private void OpenECBForm()
         {
-            GameVersion Version = ((SAV3)SaveFileEditor.SAV).Version;
+            GameVersion Version = SaveFileEditor.SAV.Version;
             if (Version == GameVersion.R || Version == GameVersion.S || Version == GameVersion.E || Version == GameVersion.RS || Version == GameVersion.RSE
                 || Version == GameVersion.FR || Version == GameVersion.LG || Version == GameVersion.FRLG)
                 new ECBForm((SAV3)SaveFileEditor.SAV).ShowDialog();
@@ -85,7 +85,7 @@ namespace WC3Plugin
 
         private void OpenECTForm()
         {
-            GameVersion Version = ((SAV3)SaveFileEditor.SAV).Version;
+            GameVersion Version = SaveFileEditor.SAV.Version;
             if (Version == GameVersion.R || Version == GameVersion.S || Version == GameVersion.E || Version == GameVersion.RS || Version == GameVersion.RSE
                 || Version == GameVersion.FR || Version == GameVersion.LG || Version == GameVersion.FRLG)
                 new ECTForm((SAV3)SaveFileEditor.SAV).ShowDialog();
@@ -95,7 +95,7 @@ namespace WC3Plugin
 
         private void OpenWN3Form()
         {
-            GameVersion Version = ((SAV3)SaveFileEditor.SAV).Version;
+            GameVersion Version = SaveFileEditor.SAV.Version;
             if (Version == GameVersion.E || Version == GameVersion.FR || Version == GameVersion.FR || Version == GameVersion.LG || Version == GameVersion.FRLG)
                 new WN3Form((SAV3)SaveFileEditor.SAV).ShowDialog();
             else
