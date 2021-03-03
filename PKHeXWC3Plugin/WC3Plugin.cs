@@ -11,6 +11,13 @@ namespace WC3Plugin
         public ISaveFileProvider SaveFileEditor { get; private set; }
         public IPKMView PKMEditor { get; private set; }
 
+        private ToolStripMenuItem ctrl;
+        private ToolStripMenuItem wc3;
+        private ToolStripMenuItem me3;
+        private ToolStripMenuItem ect;
+        private ToolStripMenuItem ecb;
+        private ToolStripMenuItem wn3;
+
         public void Initialize(params object[] args)
         {
             Console.WriteLine($"Loading {Name}...");
@@ -31,80 +38,64 @@ namespace WC3Plugin
 
         private void AddPluginControl(ToolStripDropDownItem tools)
         {
-            var ctrl = new ToolStripMenuItem(Name);
+            ctrl = new(Name);
+            ctrl.Enabled = false;
             tools.DropDownItems.Add(ctrl);
 
-            var c2 = new ToolStripMenuItem($"Mystery Gift (WC3)");
-            c2.Click += (s, e) => OpenWC3Form();
-            ctrl.DropDownItems.Add(c2);
+            wc3 = new($"Mystery Gift (WC3)");
+            wc3.Enabled = false;
+            wc3.Click += (s, e) => OpenWC3Form();
+            ctrl.DropDownItems.Add(wc3);
 
-            var c3 = new ToolStripMenuItem($"Mystery Event (ME3)");
-            c3.Click += (s, e) => OpenME3Form();
-            ctrl.DropDownItems.Add(c3);
+            me3 = new($"Mystery Event (ME3)");
+            me3.Enabled = false;
+            me3.Click += (s, e) => OpenME3Form();
+            ctrl.DropDownItems.Add(me3);
 
-            var c4 = new ToolStripMenuItem($"e-Card Trainer (ECT)");
-            c4.Click += (s, e) => OpenECTForm();
-            ctrl.DropDownItems.Add(c4);
+            ect = new($"e-Card Trainer (ECT)");
+            ect.Click += (s, e) => OpenECTForm();
+            ctrl.DropDownItems.Add(ect);
 
-            var c5 = new ToolStripMenuItem($"e-Card Berries (ECB)");
-            c5.Click += (s, e) => OpenECBForm();
-            ctrl.DropDownItems.Add(c5);
+            ecb = new($"e-Card Berries (ECB)");
+            ecb.Click += (s, e) => OpenECBForm();
+            ctrl.DropDownItems.Add(ecb);
 
-            var c6 = new ToolStripMenuItem($"Wonder News (WN3)");
-            c6.Click += (s, e) => OpenWN3Form();
-            ctrl.DropDownItems.Add(c6);
+            wn3 = new($"Wonder News (WN3)");
+            wn3.Enabled = false;
+            wn3.Click += (s, e) => OpenWN3Form();
+            ctrl.DropDownItems.Add(wn3);
         }
 
         private void OpenWC3Form()
         {
-            GameVersion Version = SaveFileEditor.SAV.Version;
-            if (Version == GameVersion.E || Version == GameVersion.FR || Version == GameVersion.FR || Version == GameVersion.LG || Version == GameVersion.FRLG)
-                new WC3Form((SAV3)SaveFileEditor.SAV).ShowDialog();
-            else
-                MessageBox.Show("Mystery Gifts (MC3) are only available for Emerald, FireRed and LeafGreen!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            new WC3Form((SAV3)SaveFileEditor.SAV).ShowDialog();
         }
 
         private void OpenME3Form()
         {
-            GameVersion Version = SaveFileEditor.SAV.Version;
-            if (Version == GameVersion.R || Version == GameVersion.S || Version == GameVersion.E || Version == GameVersion.RS || Version == GameVersion.RSE)
-                new ME3Form((SAV3)SaveFileEditor.SAV).ShowDialog();
-            else
-                MessageBox.Show("Mystery Events (ME3) are only available for Ruby, Sapphire and Emerald!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            new ME3Form((SAV3)SaveFileEditor.SAV).ShowDialog();
         }
 
         private void OpenECBForm()
         {
-            GameVersion Version = SaveFileEditor.SAV.Version;
-            if (Version == GameVersion.R || Version == GameVersion.S || Version == GameVersion.E || Version == GameVersion.RS || Version == GameVersion.RSE
-                || Version == GameVersion.FR || Version == GameVersion.LG || Version == GameVersion.FRLG)
-                new ECBForm((SAV3)SaveFileEditor.SAV).ShowDialog();
-            else
-                MessageBox.Show("e-Card Berries (ECB) are only available for Ruby, Sapphire, Emerald, FireRed and LeafGreen!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            new ECBForm((SAV3)SaveFileEditor.SAV).ShowDialog();
         }
 
         private void OpenECTForm()
         {
-            GameVersion Version = SaveFileEditor.SAV.Version;
-            if (Version == GameVersion.R || Version == GameVersion.S || Version == GameVersion.E || Version == GameVersion.RS || Version == GameVersion.RSE
-                || Version == GameVersion.FR || Version == GameVersion.LG || Version == GameVersion.FRLG)
-                new ECTForm((SAV3)SaveFileEditor.SAV).ShowDialog();
-            else
-                MessageBox.Show("e-Card Trainers (ECT) are only available for Ruby, Sapphire, Emerald, FireRed and LeafGreen!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            new ECTForm((SAV3)SaveFileEditor.SAV).ShowDialog();
         }
 
         private void OpenWN3Form()
         {
-            GameVersion Version = SaveFileEditor.SAV.Version;
-            if (Version == GameVersion.E || Version == GameVersion.FR || Version == GameVersion.FR || Version == GameVersion.LG || Version == GameVersion.FRLG)
-                new WN3Form((SAV3)SaveFileEditor.SAV).ShowDialog();
-            else
-                MessageBox.Show("Wonder News (WN3) are only available for Emerald, FireRed and LeafGreen!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            new WN3Form((SAV3)SaveFileEditor.SAV).ShowDialog();
         }
 
         public void NotifySaveLoaded()
         {
-            Console.WriteLine($"{Name} was notified that a Save File was just loaded.");
+            wc3.Enabled = wn3.Enabled = SaveFileEditor.SAV.Version is GameVersion.E or GameVersion.FR or GameVersion.LG or GameVersion.FRLG;
+            me3.Enabled = SaveFileEditor.SAV.Version is GameVersion.R or GameVersion.S or GameVersion.E or GameVersion.RS or GameVersion.RSE;
+            ctrl.Enabled = SaveFileEditor.SAV.Version is GameVersion.R or GameVersion.S or GameVersion.E or GameVersion.RS or GameVersion.RSE or GameVersion.FR or GameVersion.LG or GameVersion.FRLG;
         }
 
         public bool TryLoadFile(string filePath)
