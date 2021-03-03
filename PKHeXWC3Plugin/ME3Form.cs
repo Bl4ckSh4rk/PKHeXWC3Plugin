@@ -9,7 +9,6 @@ namespace WC3Plugin
     {
         private SAV3 sav;
         private int Offset;
-        private GameVersion Version;
 
         private static readonly int Block = 4;
         private static readonly int Length = 1012;
@@ -19,12 +18,18 @@ namespace WC3Plugin
         public ME3Form(SAV3 sav)
         {
             this.sav = sav;
-            Version = sav.Version;
 
-            if (Version == GameVersion.R || Version == GameVersion.S || Version == GameVersion.RS)
-                Offset = Offset_RS;
-            else if (Version == GameVersion.E)
-                Offset = Offset_E;
+            switch (sav.Version)
+            {
+                case GameVersion.R or GameVersion.S or GameVersion.RS:
+                    Offset = Offset_RS;
+                    break;
+                case GameVersion.E:
+                    Offset = Offset_E;
+                    break;
+                default:
+                    break;
+            }
 
             InitializeComponent();
         }
@@ -57,7 +62,7 @@ namespace WC3Plugin
                     }
                     else
                     {
-                        MessageBox.Show($"Invalid file size ({fileSize} bytes). Expected {Length} bytes.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        MessageBox.Show($"Invalid file size ({fileSize} bytes). Expected {Length - 8} or {Length} bytes.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     }
                 }
 

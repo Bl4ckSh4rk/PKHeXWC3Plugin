@@ -10,6 +10,7 @@
     <RootNamespace>WC3Plugin</RootNamespace>
     <AssemblyName>WC3Plugin</AssemblyName>
     <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
+    <LangVersion>9</LangVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">

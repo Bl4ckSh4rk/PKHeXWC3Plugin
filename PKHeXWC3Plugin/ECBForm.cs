@@ -10,7 +10,6 @@ namespace WC3Plugin
         private SAV3 sav;
         private int Offset;
         private int Length;
-        private GameVersion Version;
 
         private static readonly int Block = 4;
         private static readonly int Length_RS = 1328;
@@ -22,22 +21,23 @@ namespace WC3Plugin
         public ECBForm(SAV3 sav)
         {
             this.sav = sav;
-            Version = sav.Version;
 
-            if (Version == GameVersion.R || Version == GameVersion.S || Version == GameVersion.RS)
+            switch (sav.Version)
             {
-                Length = Length_RS;
-                Offset = Offset_RS;
-            }
-            else if (Version == GameVersion.E)
-            {
-                Length = Length_FRLGE;
-                Offset = Offset_E;
-            }
-            else if (Version == GameVersion.FR || Version == GameVersion.LG || Version == GameVersion.FRLG)
-            {
-                Length = Length_FRLGE;
-                Offset = Offset_FRLG;
+                case GameVersion.R or GameVersion.S or GameVersion.RS:
+                    Length = Length_RS;
+                    Offset = Offset_RS;
+                    break;
+                case GameVersion.E:
+                    Length = Length_FRLGE;
+                    Offset = Offset_E;
+                    break;
+                case GameVersion.FR or GameVersion.LG or GameVersion.FRLG:
+                    Length = Length_FRLGE;
+                    Offset = Offset_FRLG;
+                    break;
+                default:
+                    break;
             }
 
             InitializeComponent();

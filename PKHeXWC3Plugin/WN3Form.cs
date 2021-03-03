@@ -10,7 +10,6 @@ namespace WC3Plugin
         private SAV3 sav;
         private int Offset;
         private int Length;
-        private GameVersion Version;
 
         private static readonly int Block = 4;
         private static readonly int Length_EU = 448;
@@ -21,12 +20,18 @@ namespace WC3Plugin
         public WN3Form(SAV3 sav)
         {
             this.sav = sav;
-            Version = sav.Version;
 
-            if (Version == GameVersion.E)
-                Offset = Offset_E;
-            else if (Version == GameVersion.FR || Version == GameVersion.LG || Version == GameVersion.FRLG)
-                Offset = Offset_FRLG;
+            switch (sav.Version)
+            {
+                case GameVersion.E:
+                    Offset = Offset_E;
+                    break;
+                case GameVersion.FR or GameVersion.LG or GameVersion.FRLG:
+                    Offset = Offset_FRLG;
+                    break;
+                default:
+                    break;
+            }
 
             InitializeComponent();
 
