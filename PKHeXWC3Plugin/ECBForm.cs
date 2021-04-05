@@ -11,7 +11,6 @@ namespace WC3Plugin
         private int Offset;
         private int Length;
 
-        private static readonly int Block = 4;
         private static readonly int Length_RS = 1328;
         private static readonly int Length_FRLGE = 52;
         private static readonly int Offset_RS = 0x2E0;
@@ -25,16 +24,16 @@ namespace WC3Plugin
             switch (sav.Version)
             {
                 case GameVersion.R or GameVersion.S or GameVersion.RS:
-                    Length = Length_RS;
-                    Offset = Offset_RS;
+                    Length = Length_RS + 0x2E80;
+                    Offset = Offset_RS + 0x2E80;
                     break;
                 case GameVersion.E:
-                    Length = Length_FRLGE;
-                    Offset = Offset_E;
+                    Length = Length_FRLGE + 0x2E80;
+                    Offset = Offset_E + 0x2E80;
                     break;
                 case GameVersion.FR or GameVersion.LG or GameVersion.FRLG:
-                    Length = Length_FRLGE;
-                    Offset = Offset_FRLG;
+                    Length = Length_FRLGE + 0x2E80;
+                    Offset = Offset_FRLG + 0x2E80;
                     break;
                 default:
                     break;
@@ -60,7 +59,7 @@ namespace WC3Plugin
                     {
                         try
                         {
-                            sav.SetData(Checksums.FixECBChecksum(File.ReadAllBytes(ofd.FileName)), sav.GetBlockOffset(Block) + Offset);
+                            Checksums.FixECBChecksum(File.ReadAllBytes(ofd.FileName)).CopyTo(sav.Large, Offset);
 
                             success = true;
                         }
@@ -92,7 +91,7 @@ namespace WC3Plugin
                 sfd.Title = "Save e-Card Berry file";
                 sfd.FilterIndex = 1;
 
-                byte[] data = sav.GetData(sav.GetBlockOffset(Block) + Offset, Length);
+                byte[] data = sav.Large.Slice(Offset, Length);
 
                 if (!data.IsRangeAll((byte)0, 0, data.Length))
                 {

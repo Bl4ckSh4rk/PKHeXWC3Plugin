@@ -10,7 +10,6 @@ namespace WC3Plugin
         private SAV3 sav;
         private int Offset;
 
-        private static readonly int Block = 4;
         private static readonly int Length = 1012;
         private static readonly int Offset_RS = 0x810;
         private static readonly int Offset_E = 0x8A8;
@@ -22,10 +21,10 @@ namespace WC3Plugin
             switch (sav.Version)
             {
                 case GameVersion.R or GameVersion.S or GameVersion.RS:
-                    Offset = Offset_RS;
+                    Offset = Offset_RS + 0x2E80;
                     break;
                 case GameVersion.E:
-                    Offset = Offset_E;
+                    Offset = Offset_E + 0x2E80;
                     break;
                 default:
                     break;
@@ -51,7 +50,7 @@ namespace WC3Plugin
                     {
                         try
                         {
-                            sav.SetData(Checksums.FixME3Checksum(File.ReadAllBytes(ofd.FileName)), sav.GetBlockOffset(Block) + Offset);
+                            Checksums.FixME3Checksum(File.ReadAllBytes(ofd.FileName)).CopyTo(sav.Large, Offset);
 
                             success = true;
                         }
@@ -83,7 +82,7 @@ namespace WC3Plugin
                 sfd.Title = "Save Mystery Event file";
                 sfd.FilterIndex = 1;
 
-                byte[] data = sav.GetData(sav.GetBlockOffset(Block) + Offset, Length);
+                byte[] data = sav.Large.Slice(Offset, Length);
 
                 if (!data.IsRangeAll((byte)0, 0, data.Length))
                 {

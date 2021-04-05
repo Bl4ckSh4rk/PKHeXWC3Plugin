@@ -11,7 +11,6 @@ namespace WC3Plugin
         private int Offset;
         private int Length;
 
-        private static readonly int Block = 4;
         private static readonly int Length_EU = 448;
         private static readonly int Length_JAP = 228;
         private static readonly int Offset_E = 0x3AC;
@@ -24,10 +23,10 @@ namespace WC3Plugin
             switch (sav.Version)
             {
                 case GameVersion.E:
-                    Offset = Offset_E;
+                    Offset = Offset_E + 0x2E80;
                     break;
                 case GameVersion.FR or GameVersion.LG or GameVersion.FRLG:
-                    Offset = Offset_FRLG;
+                    Offset = Offset_FRLG + 0x2E80;
                     break;
                 default:
                     break;
@@ -58,7 +57,7 @@ namespace WC3Plugin
                     {
                         try
                         {
-                            sav.SetData(Checksums.FixWN3Checksum(File.ReadAllBytes(ofd.FileName)), sav.GetBlockOffset(Block) + Offset);
+                            Checksums.FixWN3Checksum(File.ReadAllBytes(ofd.FileName)).CopyTo(sav.Large, Offset);
 
                             success = true;
                         }
@@ -90,7 +89,7 @@ namespace WC3Plugin
                 sfd.Title = "Save Wonder News file";
                 sfd.FilterIndex = 1;
 
-                byte[] data = sav.GetData(sav.GetBlockOffset(Block) + Offset, Length);
+                byte[] data = sav.Large.Slice(Offset, Length);
 
                 if (!data.IsRangeAll((byte)0, 0, data.Length))
                 {

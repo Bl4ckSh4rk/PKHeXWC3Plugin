@@ -10,7 +10,6 @@ namespace WC3Plugin
         private SAV3 sav;
         private int Offset;
 
-        private static readonly int Block = 0;
         private static readonly int Length = 188;
         private static readonly int Offset_RS = 0x498;
         private static readonly int Offset_E = 0xBEC;
@@ -55,7 +54,7 @@ namespace WC3Plugin
                     {
                         try
                         {
-                            sav.SetData(Checksums.FixECTChecksum(File.ReadAllBytes(ofd.FileName)), sav.GetBlockOffset(Block) + Offset);
+                            Checksums.FixECTChecksum(File.ReadAllBytes(ofd.FileName)).CopyTo(sav.Small, Offset);
 
                             success = true;
                         }
@@ -87,7 +86,7 @@ namespace WC3Plugin
                 sfd.Title = "Save e-Card Trainer file";
                 sfd.FilterIndex = 1;
 
-                byte[] data = sav.GetData(sav.GetBlockOffset(Block) + Offset, Length);
+                byte[] data = sav.Small.Slice(Offset, Length);
 
                 if (!data.IsRangeAll((byte)0, 0, data.Length))
                 {
