@@ -37,7 +37,7 @@ namespace WC3Plugin
 
             InitializeComponent();
 
-            if (sav.Language == 0)
+            if (sav.Language == (int)LanguageID.Japanese)
                 LangJAPButton.Checked = true;
             else
                 LangEUButton.Checked = true;
@@ -107,7 +107,7 @@ namespace WC3Plugin
                 Array.Copy(wc, 0, data, 0, Length_WC);
                 Array.Copy(script, 0, data, Offset_Script_WC3, Length_Script);
 
-                if (!data.IsRangeAll((byte)0, 0, data.Length))
+                //if (!data.IsRangeAll((byte)0, 0, data.Length))
                 {
                     if (sfd.ShowDialog() == DialogResult.OK)
                     {
@@ -123,10 +123,10 @@ namespace WC3Plugin
                         }
                     }
                 }
-                else
-                {
-                    MessageBox.Show("There is no Mystery Gift in this save file.", "", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                }
+                //else
+                //{
+                //    MessageBox.Show("There is no Mystery Gift in this save file.", "", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                //}
 
                 if (success)
                 {

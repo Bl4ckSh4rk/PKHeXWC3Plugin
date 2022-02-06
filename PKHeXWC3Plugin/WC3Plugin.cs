@@ -93,9 +93,9 @@ namespace WC3Plugin
 
         public void NotifySaveLoaded()
         {
-            wc3.Enabled = wn3.Enabled = SaveFileEditor.SAV.Version is GameVersion.E or GameVersion.FR or GameVersion.LG or GameVersion.FRLG;
-            me3.Enabled = SaveFileEditor.SAV.Version is GameVersion.R or GameVersion.S or GameVersion.E or GameVersion.RS or GameVersion.RSE;
-            ctrl.Enabled = SaveFileEditor.SAV.Version is GameVersion.R or GameVersion.S or GameVersion.E or GameVersion.RS or GameVersion.RSE or GameVersion.FR or GameVersion.LG or GameVersion.FRLG;
+            ctrl.Enabled = SaveFileEditor.SAV is SAV3;
+            wc3.Enabled = wn3.Enabled = SaveFileEditor.SAV is SAV3E or SAV3FRLG;
+            me3.Enabled = SaveFileEditor.SAV is SAV3RS or SAV3E;
         }
 
         public bool TryLoadFile(string filePath)

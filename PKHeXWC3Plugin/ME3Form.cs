@@ -84,7 +84,7 @@ namespace WC3Plugin
 
                 byte[] data = sav.Large.Slice(Offset, Length);
 
-                if (!data.IsRangeAll((byte)0, 0, data.Length))
+                //if (!data.IsRangeAll((byte)0, 0, data.Length))
                 {
                     if (sfd.ShowDialog() == DialogResult.OK)
                     {
@@ -100,10 +100,10 @@ namespace WC3Plugin
                         }
                     }
                 }
-                else
-                {
-                    MessageBox.Show("There is no Mystery Event in this save file.", "", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                }
+                //else
+                //{
+                //    MessageBox.Show("There is no Mystery Event in this save file.", "", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                //}
 
                 if (success)
                 {
