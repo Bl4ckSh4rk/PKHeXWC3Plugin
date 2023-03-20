@@ -24,7 +24,7 @@ public partial class ECBForm : Form
 
         if (!sav.GetEReaderBerry().IsEmpty())
         {
-            TitleBox.Text = sav.EBerryName;
+            TitleBox.Text = sav.EBerryName.Trim();
             ECBExportButton.Enabled = true;
         }
     }
@@ -48,7 +48,7 @@ public partial class ECBForm : Form
                 try
                 {
                     sav.SetEReaderBerry(FixECBChecksum(File.ReadAllBytes(ofd.FileName)));
-                    BerryName = sav.EBerryName;
+                    BerryName = sav.EBerryName.Trim();
 
                     success = true;
                 }

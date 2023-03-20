@@ -18,7 +18,7 @@ public partial class WN3Form : Form
 
         if (!((IGen3Wonder)sav).WonderNews.Data.IsEmpty())
         {
-            TitleBox.Text = ((IGen3Wonder)sav).WonderNews.Title;
+            TitleBox.Text = ((IGen3Wonder)sav).WonderNews.Title.Trim();
             WN3ExportButton.Enabled = true;
         }
     }
@@ -62,7 +62,7 @@ public partial class WN3Form : Form
         if (success)
         {
             Close();
-            _ = MessageBox.Show($"{string.Format(TranslationStrings.FileImported, TranslationStrings.WonderNews)}\n\n\"{wn3.Title}\"", TranslationStrings.Success, MessageBoxButtons.OK, MessageBoxIcon.Information);
+            _ = MessageBox.Show($"{string.Format(TranslationStrings.FileImported, TranslationStrings.WonderNews)}\n\n\"{wn3.Title.Trim()}\"", TranslationStrings.Success, MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
     }
 

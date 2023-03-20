@@ -22,7 +22,7 @@ public partial class WC3Form : Form
 
         if (!((IGen3Wonder)sav).WonderCard.Data.IsEmpty())
         {
-            TitleBox.Text = ((IGen3Wonder)sav).WonderCard.Title;
+            TitleBox.Text = ((IGen3Wonder)sav).WonderCard.Title.Trim();
             WC3ExportButton.Enabled = true;
         }
     }
@@ -72,7 +72,7 @@ public partial class WC3Form : Form
         if (success)
         {
             Close();
-            _ = MessageBox.Show($"{string.Format(TranslationStrings.FileImported, TranslationStrings.MysteryGift)}\n\n\"{wc3.Title}\"", TranslationStrings.Success, MessageBoxButtons.OK, MessageBoxIcon.Information);
+            _ = MessageBox.Show($"{string.Format(TranslationStrings.FileImported, TranslationStrings.MysteryGift)}\n\n\"{wc3.Title.Trim()}\"", TranslationStrings.Success, MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
     }
 

@@ -17,7 +17,7 @@ public partial class ECTForm : Form
 
         if (!sav.GetEReaderTrainer().IsEmpty())
         {
-            TitleBox.Text = StringConverter3.GetString(sav.GetEReaderTrainer().AsSpan(4, sav.Japanese ? 5 : 7), sav.Japanese);
+            TitleBox.Text = StringConverter3.GetString(sav.GetEReaderTrainer().AsSpan(4, sav.Japanese ? 5 : 7), sav.Japanese).Trim();
             ECTExportButton.Enabled= true;
         }
     }
@@ -41,7 +41,7 @@ public partial class ECTForm : Form
                 try
                 {
                     sav.SetEReaderTrainer(FixECTChecksum(File.ReadAllBytes(ofd.FileName)));
-                    TrainerName = StringConverter3.GetString(sav.GetEReaderTrainer().AsSpan(4, sav.Japanese ? 5 : 7), sav.Japanese);
+                    TrainerName = StringConverter3.GetString(sav.GetEReaderTrainer().AsSpan(4, sav.Japanese ? 5 : 7), sav.Japanese).Trim();
 
                     success = true;
                 }
