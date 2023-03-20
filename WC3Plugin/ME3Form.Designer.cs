@@ -34,6 +34,7 @@ partial class ME3Form
         // 
         // ME3ExportButton
         // 
+        this.ME3ExportButton.Enabled = false;
         this.ME3ExportButton.Location = new System.Drawing.Point(112, 30);
         this.ME3ExportButton.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
         this.ME3ExportButton.Name = "ME3ExportButton";
@@ -67,7 +68,6 @@ partial class ME3Form
         this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
         this.Text = TranslationStrings.MysteryEvent;
         this.ResumeLayout(false);
-
     }
 
     #endregion

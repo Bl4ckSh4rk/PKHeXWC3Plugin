@@ -46,6 +46,7 @@ partial class WC3Form
         // 
         // WC3ExportButton
         // 
+        this.WC3ExportButton.Enabled = false;
         this.WC3ExportButton.Location = new System.Drawing.Point(112, 45);
         this.WC3ExportButton.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
         this.WC3ExportButton.Name = "WC3ExportButton";
@@ -79,7 +80,6 @@ partial class WC3Form
         this.Text = TranslationStrings.MysteryGift;
         this.ResumeLayout(false);
         this.PerformLayout();
-
     }
 
     #endregion

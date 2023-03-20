@@ -35,6 +35,7 @@ partial class WN3Form
         // 
         // WN3ExportButton
         // 
+        this.WN3ExportButton.Enabled = false;
         this.WN3ExportButton.Location = new System.Drawing.Point(112, 45);
         this.WN3ExportButton.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
         this.WN3ExportButton.Name = "WN3ExportButton";
@@ -79,7 +80,6 @@ partial class WN3Form
         this.Text = TranslationStrings.WonderNews;
         this.ResumeLayout(false);
         this.PerformLayout();
-
     }
 
     #endregion

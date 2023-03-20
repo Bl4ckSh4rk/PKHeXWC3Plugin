@@ -35,6 +35,7 @@ partial class ECBForm
         // 
         // ECBExportButton
         // 
+        this.ECBExportButton.Enabled = false;
         this.ECBExportButton.Location = new System.Drawing.Point(112, 45);
         this.ECBExportButton.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
         this.ECBExportButton.Name = "ECBExportButton";
@@ -79,7 +80,6 @@ partial class ECBForm
         this.Text = TranslationStrings.ECardBerry;
         this.ResumeLayout(false);
         this.PerformLayout();
-
     }
 
     #endregion

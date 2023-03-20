@@ -35,6 +35,7 @@ partial class ECTForm
         // 
         // ECTExportButton
         // 
+        this.ECTExportButton.Enabled = false;
         this.ECTExportButton.Location = new System.Drawing.Point(112, 45);
         this.ECTExportButton.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
         this.ECTExportButton.Name = "ECTExportButton";
@@ -79,7 +80,6 @@ partial class ECTForm
         this.Text = TranslationStrings.ECardTrainer;
         this.ResumeLayout(false);
         this.PerformLayout();
-
     }
 
     #endregion
