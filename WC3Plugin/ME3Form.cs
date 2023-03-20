@@ -90,7 +90,7 @@ public partial class ME3Form : Form
 
                 success = true;
             }
-            catch (Exception)
+            catch
             {
                 _ = MessageBox.Show(string.Format(TranslationStrings.WriteFileError, TranslationStrings.MysteryEvent), TranslationStrings.Error, MessageBoxButtons.OK, MessageBoxIcon.Error);
             }

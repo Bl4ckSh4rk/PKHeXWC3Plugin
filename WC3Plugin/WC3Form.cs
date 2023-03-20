@@ -58,7 +58,7 @@ public partial class WC3Form : Form
 
                     success = true;
                 }
-                catch (Exception)
+                catch
                 {
                     _ = MessageBox.Show(string.Format(TranslationStrings.ReadFileError, TranslationStrings.MysteryGift), TranslationStrings.Error, MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }

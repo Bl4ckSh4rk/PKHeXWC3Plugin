@@ -1,5 +1,5 @@
 ﻿using PKHeX.Core;
-using static System.Runtime.InteropServices.JavaScript.JSType;
+using static System.Buffers.Binary.BinaryPrimitives;
 
 namespace WC3Plugin;
 
@@ -17,7 +17,7 @@ public partial class ECTForm : Form
 
         if (!sav.GetEReaderTrainer().IsEmpty())
         {
-            TitleBox.Text = StringConverter3.GetString(sav.GetEReaderTrainer().AsSpan(8, sav.Japanese ? 5 : 7), sav.Japanese);
+            TitleBox.Text = StringConverter3.GetString(sav.GetEReaderTrainer().AsSpan(4, sav.Japanese ? 5 : 7), sav.Japanese);
             ECTExportButton.Enabled= true;
         }
     }
@@ -41,11 +41,11 @@ public partial class ECTForm : Form
                 try
                 {
                     sav.SetEReaderTrainer(FixECTChecksum(File.ReadAllBytes(ofd.FileName)));
-                    TrainerName = StringConverter3.GetString(sav.GetEReaderTrainer().AsSpan(8, sav.Japanese ? 5 : 7), sav.Japanese);
+                    TrainerName = StringConverter3.GetString(sav.GetEReaderTrainer().AsSpan(4, sav.Japanese ? 5 : 7), sav.Japanese);
 
                     success = true;
                 }
-                catch (Exception)
+                catch
                 {
                     _ = MessageBox.Show(string.Format(TranslationStrings.ReadFileError, TranslationStrings.ECardTrainer), TranslationStrings.Error, MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
@@ -71,17 +71,15 @@ public partial class ECTForm : Form
         sfd.Title = string.Format(TranslationStrings.SaveFile, TranslationStrings.ECardTrainer); ;
         sfd.FilterIndex = 1;
 
-        byte[] data = sav.GetEReaderTrainer();
-
         if (sfd.ShowDialog() == DialogResult.OK)
         {
             try
             {
-                File.WriteAllBytes(sfd.FileName, data);
+                File.WriteAllBytes(sfd.FileName, sav.GetEReaderTrainer());
 
                 success = true;
             }
-            catch (Exception)
+            catch
             {
                 _ = MessageBox.Show(string.Format(TranslationStrings.WriteFileError, TranslationStrings.ECardTrainer), TranslationStrings.Error, MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
@@ -99,10 +97,7 @@ public partial class ECTForm : Form
     {
         uint chk = GetECTChecksum(data);
 
-        data[^4] = (byte)(chk & 0xFF);
-        data[^3] = (byte)(chk >> 8);
-        data[^2] = (byte)(chk >> 16);
-        data[^1] = (byte)(chk >> 24);
+        WriteUInt32LittleEndian(data.AsSpan(0xB8), chk);
 
         return data;
     }

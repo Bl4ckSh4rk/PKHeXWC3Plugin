@@ -1,4 +1,5 @@
 ﻿using PKHeX.Core;
+using static System.Buffers.Binary.BinaryPrimitives;
 
 namespace WC3Plugin;
 
@@ -51,7 +52,7 @@ public partial class ECBForm : Form
 
                     success = true;
                 }
-                catch (Exception)
+                catch
                 {
                     _ = MessageBox.Show(string.Format(TranslationStrings.ReadFileError, TranslationStrings.ECardBerry), TranslationStrings.Error, MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
@@ -77,17 +78,15 @@ public partial class ECBForm : Form
         sfd.Title = string.Format(TranslationStrings.SaveFile, TranslationStrings.ECardBerry); ;
         sfd.FilterIndex = 1;
 
-        byte[] data = sav.GetEReaderBerry();
-
         if (sfd.ShowDialog() == DialogResult.OK)
         {
             try
             {
-                File.WriteAllBytes(sfd.FileName, data);
+                File.WriteAllBytes(sfd.FileName, sav.GetEReaderBerry());
 
                 success = true;
             }
-            catch (Exception)
+            catch
             {
                 _ = MessageBox.Show(string.Format(TranslationStrings.WriteFileError, TranslationStrings.ECardBerry), TranslationStrings.Error, MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
@@ -102,10 +101,9 @@ public partial class ECBForm : Form
 
     public static byte[] FixECBChecksum(byte[] data)
     {
-        uint chk = GetECBChecksum(data);
+        ushort chk = GetECBChecksum(data);
 
-        data[data.Length - 4] = (byte)(chk & 0xFF);
-        data[data.Length - 3] = (byte)(chk >> 8);
+        WriteUInt16LittleEndian(data.AsSpan(data.Length - 4), chk);
 
         return data;
     }

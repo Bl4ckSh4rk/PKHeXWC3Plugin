@@ -43,30 +43,27 @@ public class WC3Plugin : IPlugin
             Visible = false,
             Image = Properties.Resources.icon
         };
-        tools?.DropDownItems.Add(ctrl);
+        _ = (tools?.DropDownItems.Add(ctrl));
 
-        wc3 = new($"{TranslationStrings.MysteryGift} (WC3)");
-        wc3.Visible = false;
+        wc3 = new($"{TranslationStrings.MysteryGift} (WC3)") { Visible = false };
         wc3.Click += (s, e) => OpenWC3Form();
-        ctrl.DropDownItems.Add(wc3);
+        _ = ctrl.DropDownItems.Add(wc3);
 
-        me3 = new($"{TranslationStrings.MysteryEvent} (ME3)");
-        me3.Visible = false;
+        me3 = new($"{TranslationStrings.MysteryEvent} (ME3)") { Visible = false };
         me3.Click += (s, e) => OpenME3Form();
-        ctrl.DropDownItems.Add(me3);
+        _ = ctrl.DropDownItems.Add(me3);
 
         ect = new($"{TranslationStrings.ECardTrainer} (ECT)");
         ect.Click += (s, e) => OpenECTForm();
-        ctrl.DropDownItems.Add(ect);
+        _ = ctrl.DropDownItems.Add(ect);
 
         ecb = new($"{TranslationStrings.ECardBerry} (ECB)");
         ecb.Click += (s, e) => OpenECBForm();
-        ctrl.DropDownItems.Add(ecb);
+        _ = ctrl.DropDownItems.Add(ecb);
 
-        wn3 = new($"{TranslationStrings.WonderNews} (WN3)");
-        wn3.Visible = false;
+        wn3 = new($"{TranslationStrings.WonderNews} (WN3)") { Visible = false };
         wn3.Click += (s, e) => OpenWN3Form();
-        ctrl.DropDownItems.Add(wn3);
+        _ = ctrl.DropDownItems.Add(wn3);
     }
 
     private void OpenWC3Form()
