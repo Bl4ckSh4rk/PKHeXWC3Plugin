@@ -8,9 +8,6 @@ public static class TranslationStrings
     public static string ECardTrainer { get; set; } = "e-Card Trainer";
     public static string ECardBerry { get; set; } = "e-Card Berry";
     public static string WonderNews { get; set; } = "Wonder News";
-    public static string IsNotActivated { get; set; } = "{0} is not yet activated, do you want to activate it?";
-    public static string Yes { get; set; } = "Yes";
-    public static string No { get; set; } = "No";
     public static string Import { get; set; } = "Import";
     public static string Export { get; set; } = "Export";
     public static string AllFiles { get; set; } = "All files";

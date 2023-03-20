@@ -44,9 +44,6 @@ public static class LocalizationUtil
         TranslationStrings.ECardTrainer = dict[nameof(TranslationStrings.ECardTrainer)];
         TranslationStrings.ECardBerry = dict[nameof(TranslationStrings.ECardBerry)];
         TranslationStrings.WonderNews = dict[nameof(TranslationStrings.WonderNews)];
-        TranslationStrings.IsNotActivated = dict[nameof(TranslationStrings.IsNotActivated)];
-        TranslationStrings.Yes = dict[nameof(TranslationStrings.Yes)];
-        TranslationStrings.No = dict[nameof(TranslationStrings.No)];
         TranslationStrings.Import = dict[nameof(TranslationStrings.Import)];
         TranslationStrings.Export = dict[nameof(TranslationStrings.Export)];
         TranslationStrings.AllFiles = dict[nameof(TranslationStrings.AllFiles)];
