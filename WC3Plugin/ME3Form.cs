@@ -12,7 +12,9 @@ public partial class ME3Form : Form
 
         InitializeComponent();
 
-        ME3ExportButton.Enabled = !sav.MysteryData.Data.IsEmpty() && ((IGen3Wonder)sav).WonderCard.Data.IsEmpty();
+        ME3ExportButton.Enabled = sav is SAV3RS
+            ? !sav.MysteryData.Data.IsEmpty()
+            : !sav.MysteryData.Data.IsEmpty() && ((IGen3Wonder)sav).WonderCard.Data.IsEmpty();
     }
 
     private void ME3ImportButton_Click(object sender, EventArgs e)
@@ -51,14 +53,20 @@ public partial class ME3Form : Form
                 Gen3MysteryData mystery;
 
                 if (sav is SAV3RS)
+                {
                     mystery = new MysteryEvent3RS(data[..MysteryEvent3.SIZE]);
+                    ((MysteryEvent3RS)mystery).FixChecksum();
+                }
                 else
+                {
                     mystery = new MysteryEvent3(data[..MysteryEvent3.SIZE]);
+                    ((MysteryEvent3)mystery).FixChecksum();
+                }
 
-                mystery.FixChecksum();
                 sav.MysteryData = mystery;
 
-                ((IGen3Wonder)sav).WonderCard = new(new byte[sav.Japanese ? WonderCard3.SIZE_JAP : WonderCard3.SIZE]);
+                if (sav is not SAV3RS)
+                    ((IGen3Wonder)sav).WonderCard = new(new byte[sav.Japanese ? WonderCard3.SIZE_JAP : WonderCard3.SIZE]);
 
                 if (data.Length > MysteryEvent3.SIZE)
                 {
