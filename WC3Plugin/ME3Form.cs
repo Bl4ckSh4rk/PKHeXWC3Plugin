@@ -17,52 +17,66 @@ public partial class ME3Form : Form
 
     private void ME3ImportButton_Click(object sender, EventArgs e)
     {
-        bool success = false;
         using var ofd = new OpenFileDialog();
         ofd.Filter = $"{TranslationStrings.MysteryEvent} (*.me3)|*.me3|{TranslationStrings.AllFiles} (*.*)|*.*";
         ofd.Title = string.Format(TranslationStrings.OpenFile, TranslationStrings.MysteryEvent);
         ofd.FilterIndex = 1;
 
         if (ofd.ShowDialog() == DialogResult.OK)
+            ImportME3(ofd.FileName);
+    }
+
+    private void ME3ExportButton_Click(object sender, EventArgs e)
+    {
+        using var sfd = new SaveFileDialog();
+        sfd.Filter = $"{TranslationStrings.MysteryEvent} (*.me3)|*.me3|{TranslationStrings.AllFiles} (*.*)|*.*";
+        sfd.Title = string.Format(TranslationStrings.SaveFile, TranslationStrings.MysteryEvent); ;
+        sfd.FilterIndex = 1;
+
+        if (sfd.ShowDialog() == DialogResult.OK)
+            ExportME3(sfd.FileName);
+    }
+
+    private void ImportME3(string fileName)
+    {
+        bool success = false;
+        long fileSize = new FileInfo(fileName).Length;
+
+        if (fileSize is MysteryEvent3.SIZE or (MysteryEvent3.SIZE + RecordMixing3Gift.SIZE))
         {
-            long fileSize = new FileInfo(ofd.FileName).Length;
-
-            if (fileSize is MysteryEvent3.SIZE or (MysteryEvent3.SIZE + RecordMixing3Gift.SIZE))
+            try
             {
-                try
+                byte[] data = File.ReadAllBytes(fileName);
+
+                Gen3MysteryData mystery;
+
+                if (sav is SAV3RS)
+                    mystery = new MysteryEvent3RS(data[..MysteryEvent3.SIZE]);
+                else
+                    mystery = new MysteryEvent3(data[..MysteryEvent3.SIZE]);
+
+                mystery.FixChecksum();
+                sav.MysteryData = mystery;
+
+                ((IGen3Wonder)sav).WonderCard = new(new byte[sav.Japanese ? WonderCard3.SIZE_JAP : WonderCard3.SIZE]);
+
+                if (data.Length > MysteryEvent3.SIZE)
                 {
-                    byte[] data = File.ReadAllBytes(ofd.FileName);
-
-                    Gen3MysteryData mystery;
-
-                    if (sav is SAV3RS)
-                        mystery = new MysteryEvent3RS(data[..MysteryEvent3.SIZE]);
-                    else
-                        mystery = new MysteryEvent3(data[..MysteryEvent3.SIZE]);
-
-                    mystery.FixChecksum();
-                    sav.MysteryData = mystery;
-
-                    ((IGen3Wonder)sav).WonderCard = new(new byte[sav.Japanese ? WonderCard3.SIZE_JAP : WonderCard3.SIZE]);
-
-                    if (data.Length > MysteryEvent3.SIZE)
-                    {
-                        RecordMixing3Gift rm3 = new(data[MysteryEvent3.SIZE..]);
-                        rm3.FixChecksum();
-                        ((IGen3Hoenn)sav).RecordMixingGift = rm3;
-                    }
-
-                    success = true;
+                    RecordMixing3Gift rm3 = new(data[MysteryEvent3.SIZE..]);
+                    rm3.FixChecksum();
+                    ((IGen3Hoenn)sav).RecordMixingGift = rm3;
                 }
-                catch
-                {
-                    _ = MessageBox.Show(string.Format(TranslationStrings.ReadFileError, TranslationStrings.MysteryEvent), TranslationStrings.Error, MessageBoxButtons.OK, MessageBoxIcon.Error);
-                }
+
+                success = true;
             }
-            else
+            catch
             {
-                _ = MessageBox.Show(string.Format(TranslationStrings.InvalidFileSize, fileSize, MysteryEvent3.SIZE), TranslationStrings.Error, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                _ = MessageBox.Show(string.Format(TranslationStrings.ReadFileError, TranslationStrings.MysteryEvent), TranslationStrings.Error, MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
+        }
+        else
+        {
+            _ = MessageBox.Show(string.Format(TranslationStrings.InvalidFileSize, fileSize, MysteryEvent3.SIZE), TranslationStrings.Error, MessageBoxButtons.OK, MessageBoxIcon.Error);
         }
 
         if (success)
@@ -72,34 +86,40 @@ public partial class ME3Form : Form
         }
     }
 
-    private void ME3ExportButton_Click(object sender, EventArgs e)
+    private void ExportME3(string fileName)
     {
         bool success = false;
-        using var sfd = new SaveFileDialog();
-        sfd.Filter = $"{TranslationStrings.MysteryEvent} (*.me3)|*.me3|{TranslationStrings.AllFiles} (*.*)|*.*";
-        sfd.Title = string.Format(TranslationStrings.SaveFile, TranslationStrings.MysteryEvent); ;
-        sfd.FilterIndex = 1;
 
-        byte[] data = sav.MysteryData.Data;
-
-        if (sfd.ShowDialog() == DialogResult.OK)
+        try
         {
-            try
-            {
-                File.WriteAllBytes(sfd.FileName, data);
+            File.WriteAllBytes(fileName, sav.MysteryData.Data);
 
-                success = true;
-            }
-            catch
-            {
-                _ = MessageBox.Show(string.Format(TranslationStrings.WriteFileError, TranslationStrings.MysteryEvent), TranslationStrings.Error, MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
+            success = true;
+        }
+        catch
+        {
+            _ = MessageBox.Show(string.Format(TranslationStrings.WriteFileError, TranslationStrings.MysteryEvent), TranslationStrings.Error, MessageBoxButtons.OK, MessageBoxIcon.Error);
         }
 
         if (success)
         {
             Close();
-            _ = MessageBox.Show(string.Format(TranslationStrings.FileExported, TranslationStrings.MysteryEvent, sfd.FileName), TranslationStrings.Success, MessageBoxButtons.OK, MessageBoxIcon.Information);
+            _ = MessageBox.Show(string.Format(TranslationStrings.FileExported, TranslationStrings.MysteryEvent, fileName), TranslationStrings.Success, MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
+    }
+
+    void ME3Form_DragEnter(object sender, DragEventArgs e)
+    {
+        if (e is null)
+            return;
+        if (e.AllowedEffect == (DragDropEffects.Copy | DragDropEffects.Link | DragDropEffects.Move))
+            e.Effect = DragDropEffects.Copy;
+    }
+
+    void ME3Form_DragDrop(object sender, DragEventArgs e)
+    {
+        if (e?.Data?.GetData(DataFormats.FileDrop) is not string[] { Length: not 0 } files)
+            return;
+        ImportME3(files[0]);
     }
 }

@@ -67,6 +67,7 @@ partial class WN3Form
         // 
         // WN3Form
         // 
+        this.AllowDrop = true;
         this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
         this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
         this.ClientSize = new System.Drawing.Size(214, 86);
@@ -78,6 +79,8 @@ partial class WN3Form
         this.Name = "WN3Form";
         this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
         this.Text = TranslationStrings.WonderNews;
+        this.DragEnter += new System.Windows.Forms.DragEventHandler(this.WN3Form_DragEnter);
+        this.DragDrop += new System.Windows.Forms.DragEventHandler(this.WN3Form_DragDrop);
         this.ResumeLayout(false);
         this.PerformLayout();
     }

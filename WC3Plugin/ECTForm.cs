@@ -24,36 +24,49 @@ public partial class ECTForm : Form
 
     private void ECTImportButton_Click(object sender, EventArgs e)
     {
-        bool success = false;
         using var ofd = new OpenFileDialog();
         ofd.Filter = $"{TranslationStrings.ECardTrainer} (*.ect)|*.ect|{TranslationStrings.AllFiles} (*.*)|*.*";
         ofd.Title = string.Format(TranslationStrings.OpenFile, TranslationStrings.ECardTrainer);
         ofd.FilterIndex = 1;
 
-        string TrainerName = string.Empty;
-
         if (ofd.ShowDialog() == DialogResult.OK)
+            ImportECT(ofd.FileName);
+    }
+
+    private void ECTExportButton_Click(object sender, EventArgs e)
+    {
+        using var sfd = new SaveFileDialog();
+        sfd.Filter = $"{TranslationStrings.ECardTrainer} (*.ect)|*.ect|{TranslationStrings.AllFiles} (*.*)|*.*";
+        sfd.Title = string.Format(TranslationStrings.SaveFile, TranslationStrings.ECardTrainer); ;
+        sfd.FilterIndex = 1;
+
+        if (sfd.ShowDialog() == DialogResult.OK)
+            ExportECT(sfd.FileName);
+    }
+
+    private void ImportECT(string fileName)
+    {
+        bool success = false;
+        string TrainerName = string.Empty;
+        long fileSize = new FileInfo(fileName).Length;
+
+        if (fileSize == SIZE)
         {
-            long fileSize = new FileInfo(ofd.FileName).Length;
-
-            if (fileSize == SIZE)
+            try
             {
-                try
-                {
-                    sav.SetEReaderTrainer(FixECTChecksum(File.ReadAllBytes(ofd.FileName)));
-                    TrainerName = StringConverter3.GetString(sav.GetEReaderTrainer().AsSpan(4, sav.Japanese ? 5 : 7), sav.Japanese).Trim();
+                sav.SetEReaderTrainer(FixECTChecksum(File.ReadAllBytes(fileName)));
+                TrainerName = StringConverter3.GetString(sav.GetEReaderTrainer().AsSpan(4, sav.Japanese ? 5 : 7), sav.Japanese).Trim();
 
-                    success = true;
-                }
-                catch
-                {
-                    _ = MessageBox.Show(string.Format(TranslationStrings.ReadFileError, TranslationStrings.ECardTrainer), TranslationStrings.Error, MessageBoxButtons.OK, MessageBoxIcon.Error);
-                }
+                success = true;
             }
-            else
+            catch
             {
-                _ = MessageBox.Show(string.Format(TranslationStrings.InvalidFileSize, fileSize, SIZE), TranslationStrings.Error, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                _ = MessageBox.Show(string.Format(TranslationStrings.ReadFileError, TranslationStrings.ECardTrainer), TranslationStrings.Error, MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
+        }
+        else
+        {
+            _ = MessageBox.Show(string.Format(TranslationStrings.InvalidFileSize, fileSize, SIZE), TranslationStrings.Error, MessageBoxButtons.OK, MessageBoxIcon.Error);
         }
 
         if (success)
@@ -63,37 +76,44 @@ public partial class ECTForm : Form
         }
     }
 
-    private void ECTExportButton_Click(object sender, EventArgs e)
+    private void ExportECT(string fileName)
     {
         bool success = false;
-        using var sfd = new SaveFileDialog();
-        sfd.Filter = $"{TranslationStrings.ECardTrainer} (*.ect)|*.ect|{TranslationStrings.AllFiles} (*.*)|*.*";
-        sfd.Title = string.Format(TranslationStrings.SaveFile, TranslationStrings.ECardTrainer); ;
-        sfd.FilterIndex = 1;
 
-        if (sfd.ShowDialog() == DialogResult.OK)
+        try
         {
-            try
-            {
-                File.WriteAllBytes(sfd.FileName, sav.GetEReaderTrainer());
+            File.WriteAllBytes(fileName, sav.GetEReaderTrainer());
 
-                success = true;
-            }
-            catch
-            {
-                _ = MessageBox.Show(string.Format(TranslationStrings.WriteFileError, TranslationStrings.ECardTrainer), TranslationStrings.Error, MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
+            success = true;
+        }
+        catch
+        {
+            _ = MessageBox.Show(string.Format(TranslationStrings.WriteFileError, TranslationStrings.ECardTrainer), TranslationStrings.Error, MessageBoxButtons.OK, MessageBoxIcon.Error);
         }
 
         if (success)
         {
             Close();
-            _ = MessageBox.Show(string.Format(TranslationStrings.FileExported, TranslationStrings.ECardTrainer, sfd.FileName), TranslationStrings.Success, MessageBoxButtons.OK, MessageBoxIcon.Information);
+            _ = MessageBox.Show(string.Format(TranslationStrings.FileExported, TranslationStrings.ECardTrainer, fileName), TranslationStrings.Success, MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
     }
 
+    void ECTForm_DragEnter(object sender, DragEventArgs e)
+    {
+        if (e is null)
+            return;
+        if (e.AllowedEffect == (DragDropEffects.Copy | DragDropEffects.Link | DragDropEffects.Move))
+            e.Effect = DragDropEffects.Copy;
+    }
 
-    public static byte[] FixECTChecksum(byte[] data)
+    void ECTForm_DragDrop(object sender, DragEventArgs e)
+    {
+        if (e?.Data?.GetData(DataFormats.FileDrop) is not string[] { Length: not 0 } files)
+            return;
+        ImportECT(files[0]);
+    }
+
+    private static byte[] FixECTChecksum(byte[] data)
     {
         uint chk = GetECTChecksum(data);
 

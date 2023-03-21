@@ -67,6 +67,7 @@ partial class ECBForm
         // 
         // ECBForm
         // 
+        this.AllowDrop = true;
         this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
         this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
         this.ClientSize = new System.Drawing.Size(214, 86);
@@ -78,6 +79,8 @@ partial class ECBForm
         this.Name = "ECBForm";
         this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
         this.Text = TranslationStrings.ECardBerry;
+        this.DragEnter += new System.Windows.Forms.DragEventHandler(this.ECBForm_DragEnter);
+        this.DragDrop += new System.Windows.Forms.DragEventHandler(this.ECBForm_DragDrop);
         this.ResumeLayout(false);
         this.PerformLayout();
     }

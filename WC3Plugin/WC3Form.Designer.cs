@@ -67,6 +67,7 @@ partial class WC3Form
         // 
         // WC3Form
         // 
+        this.AllowDrop = true;
         this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
         this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
         this.ClientSize = new System.Drawing.Size(214, 86);
@@ -78,6 +79,8 @@ partial class WC3Form
         this.Name = "WC3Form";
         this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
         this.Text = TranslationStrings.MysteryGift;
+        this.DragEnter += new System.Windows.Forms.DragEventHandler(this.WC3Form_DragEnter);
+        this.DragDrop += new System.Windows.Forms.DragEventHandler(this.WC3Form_DragDrop);
         this.ResumeLayout(false);
         this.PerformLayout();
     }

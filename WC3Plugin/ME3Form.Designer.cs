@@ -57,6 +57,7 @@ partial class ME3Form
         // 
         // ME3Form
         // 
+        this.AllowDrop = true;
         this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
         this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
         this.ClientSize = new System.Drawing.Size(214, 86);
@@ -67,6 +68,8 @@ partial class ME3Form
         this.Name = "ME3Form";
         this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
         this.Text = TranslationStrings.MysteryEvent;
+        this.DragEnter += new System.Windows.Forms.DragEventHandler(this.ME3Form_DragEnter);
+        this.DragDrop += new System.Windows.Forms.DragEventHandler(this.ME3Form_DragDrop);
         this.ResumeLayout(false);
     }
 

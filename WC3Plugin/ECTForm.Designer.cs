@@ -67,6 +67,7 @@ partial class ECTForm
         // 
         // ECTForm
         // 
+        this.AllowDrop = true;
         this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
         this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
         this.ClientSize = new System.Drawing.Size(214, 86);
@@ -78,6 +79,8 @@ partial class ECTForm
         this.Name = "ECTForm";
         this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
         this.Text = TranslationStrings.ECardTrainer;
+        this.DragEnter += new System.Windows.Forms.DragEventHandler(this.ECTForm_DragEnter);
+        this.DragDrop += new System.Windows.Forms.DragEventHandler(this.ECTForm_DragDrop);
         this.ResumeLayout(false);
         this.PerformLayout();
     }

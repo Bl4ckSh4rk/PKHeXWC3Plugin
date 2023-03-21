@@ -31,36 +31,49 @@ public partial class ECBForm : Form
 
     private void ECBImportButton_Click(object sender, EventArgs e)
     {
-        bool success = false;
         using var ofd = new OpenFileDialog();
         ofd.Filter = $"{TranslationStrings.ECardBerry} (*.ecb)|*.ecb|{TranslationStrings.AllFiles} (*.*)|*.*";
         ofd.Title = string.Format(TranslationStrings.OpenFile, TranslationStrings.ECardBerry);
         ofd.FilterIndex = 1;
 
-        string BerryName = string.Empty;
-
         if (ofd.ShowDialog() == DialogResult.OK)
+            ImportECB(ofd.FileName);
+    }
+
+    private void ECBExportButton_Click(object sender, EventArgs e)
+    {
+        using var sfd = new SaveFileDialog();
+        sfd.Filter = $"{TranslationStrings.ECardBerry} (*.ecb)|*.ecb|{TranslationStrings.AllFiles} (*.*)|*.*";
+        sfd.Title = string.Format(TranslationStrings.SaveFile, TranslationStrings.ECardBerry); ;
+        sfd.FilterIndex = 1;
+
+        if (sfd.ShowDialog() == DialogResult.OK)
+            ExportECB(sfd.FileName);
+    }
+
+    private void ImportECB(string fileName)
+    {
+        bool success = false;
+        string BerryName = string.Empty;
+        long fileSize = new FileInfo(fileName).Length;
+
+        if (fileSize == BerrySize)
         {
-            long fileSize = new FileInfo(ofd.FileName).Length;
-
-            if (fileSize == BerrySize)
+            try
             {
-                try
-                {
-                    sav.SetEReaderBerry(FixECBChecksum(File.ReadAllBytes(ofd.FileName)));
-                    BerryName = sav.EBerryName.Trim();
+                sav.SetEReaderBerry(FixECBChecksum(File.ReadAllBytes(fileName)));
+                BerryName = sav.EBerryName.Trim();
 
-                    success = true;
-                }
-                catch
-                {
-                    _ = MessageBox.Show(string.Format(TranslationStrings.ReadFileError, TranslationStrings.ECardBerry), TranslationStrings.Error, MessageBoxButtons.OK, MessageBoxIcon.Error);
-                }
+                success = true;
             }
-            else
+            catch
             {
-                _ = MessageBox.Show(string.Format(TranslationStrings.InvalidFileSize, fileSize, BerrySize), TranslationStrings.Error, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                _ = MessageBox.Show(string.Format(TranslationStrings.ReadFileError, TranslationStrings.ECardBerry), TranslationStrings.Error, MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
+        }
+        else
+        {
+            _ = MessageBox.Show(string.Format(TranslationStrings.InvalidFileSize, fileSize, BerrySize), TranslationStrings.Error, MessageBoxButtons.OK, MessageBoxIcon.Error);
         }
 
         if (success)
@@ -70,36 +83,44 @@ public partial class ECBForm : Form
         }
     }
 
-    private void ECBExportButton_Click(object sender, EventArgs e)
+    private void ExportECB(string fileName)
     {
         bool success = false;
-        using var sfd = new SaveFileDialog();
-        sfd.Filter = $"{TranslationStrings.ECardBerry} (*.ecb)|*.ecb|{TranslationStrings.AllFiles} (*.*)|*.*";
-        sfd.Title = string.Format(TranslationStrings.SaveFile, TranslationStrings.ECardBerry); ;
-        sfd.FilterIndex = 1;
 
-        if (sfd.ShowDialog() == DialogResult.OK)
+        try
         {
-            try
-            {
-                File.WriteAllBytes(sfd.FileName, sav.GetEReaderBerry());
+            File.WriteAllBytes(fileName, sav.GetEReaderBerry());
 
-                success = true;
-            }
-            catch
-            {
-                _ = MessageBox.Show(string.Format(TranslationStrings.WriteFileError, TranslationStrings.ECardBerry), TranslationStrings.Error, MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
+            success = true;
+        }
+        catch
+        {
+            _ = MessageBox.Show(string.Format(TranslationStrings.WriteFileError, TranslationStrings.ECardBerry), TranslationStrings.Error, MessageBoxButtons.OK, MessageBoxIcon.Error);
         }
 
         if (success)
         {
             Close();
-            _ = MessageBox.Show(string.Format(TranslationStrings.FileExported, TranslationStrings.ECardBerry, sfd.FileName), TranslationStrings.Success, MessageBoxButtons.OK, MessageBoxIcon.Information);
+            _ = MessageBox.Show(string.Format(TranslationStrings.FileExported, TranslationStrings.ECardBerry, fileName), TranslationStrings.Success, MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
     }
 
-    public static byte[] FixECBChecksum(byte[] data)
+    void ECBForm_DragEnter(object sender, DragEventArgs e)
+    {
+        if (e is null)
+            return;
+        if (e.AllowedEffect == (DragDropEffects.Copy | DragDropEffects.Link | DragDropEffects.Move))
+            e.Effect = DragDropEffects.Copy;
+    }
+
+    void ECBForm_DragDrop(object sender, DragEventArgs e)
+    {
+        if (e?.Data?.GetData(DataFormats.FileDrop) is not string[] { Length: not 0 } files)
+            return;
+        ImportECB(files[0]);
+    }
+
+    private static byte[] FixECBChecksum(byte[] data)
     {
         ushort chk = GetECBChecksum(data);
 
@@ -108,7 +129,7 @@ public partial class ECBForm : Form
         return data;
     }
 
-    public static ushort GetECBChecksum(byte[] data)
+    private static ushort GetECBChecksum(byte[] data)
     {
         ushort chk = 0;
 
