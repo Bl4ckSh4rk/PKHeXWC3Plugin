@@ -10,6 +10,8 @@ public partial class ECBForm : Form
     private readonly int BerrySize;
     private const int SIZE_RS = 1328;
     private const int SIZE_FRLGE = 52;
+    private const int VAR_ENIGMA_BERRY_AVAILABLE_RSE = 0x402D;
+    private const int VAR_ENIGMA_BERRY_AVAILABLE_FRLG = 0x4033; // unused but set by script command
 
     public ECBForm(SAV3 sav)
     {
@@ -63,6 +65,7 @@ public partial class ECBForm : Form
             {
                 sav.SetEReaderBerry(FixECBChecksum(File.ReadAllBytes(fileName)));
                 BerryName = sav.EBerryName.Trim();
+                sav.SetWork((sav is SAV3RS or SAV3E) ? VAR_ENIGMA_BERRY_AVAILABLE_RSE : VAR_ENIGMA_BERRY_AVAILABLE_FRLG, 1);
 
                 success = true;
             }
