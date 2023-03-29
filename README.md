@@ -1,5 +1,5 @@
 # WC3 Plugin
-[PKHeX](https://github.com/kwsch/PKHeX) plugin to import and export Gen. 3 event files.
+[PKHeX](https://projectpokemon.org/home/files/file/1-pkhex/) plugin to import and export Gen. 3 event files.
 This includes the following:
 - Mystery Gifts (WC3) for *FireRed, LeafGreen and Emerald*
 - Mystery Events (ME3) for *Ruby, Sapphire and Emerald*
@@ -26,4 +26,6 @@ Put the plugin into the *plugins* folder in your PKHeX directory, then access it
 ## Credits & Thanks
 - Kaphotics for [PKHeX](https://github.com/kwsch/PKHeX)
 - suloku for [Gen 3 Mystery Gift Tool](https://github.com/suloku/wc-tool)
-- Everyone else who helped researching and preserving Gen. 3 Mystery Gifts! (ajxpk, Deoxyz, HaxAras and more!)
+- ajxpk, Deoxyz, HaxAras (and everyone not explicitly mentioned here) for researching and preserving Gen. 3 Mystery Gifts!
+- Translators:
+ - Chinese (CHT/CHS): wubinwww
