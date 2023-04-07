@@ -28,4 +28,4 @@ Put the plugin into the *plugins* folder in your PKHeX directory, then access it
 - suloku for [Gen 3 Mystery Gift Tool](https://github.com/suloku/wc-tool)
 - ajxpk, Deoxyz, HaxAras (and everyone not explicitly mentioned here) for researching and preserving Gen. 3 Mystery Gifts!
 - Translators:
- - Chinese (CHT/CHS): wubinwww
+  - Chinese (CHT/CHS): wubinwww
