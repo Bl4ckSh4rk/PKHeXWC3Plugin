@@ -10,8 +10,8 @@ public partial class ECBForm : Form
     private readonly int BerrySize;
     private const int SIZE_RS = 1328;
     private const int SIZE_FRLGE = 52;
-    private const int VAR_ENIGMA_BERRY_AVAILABLE_RSE = 0x402D;
-    private const int VAR_ENIGMA_BERRY_AVAILABLE_FRLG = 0x4033; // unused but set by script command
+    private const int VAR_ENIGMA_BERRY_AVAILABLE_RSE = 0x2D;  // 0x402D
+    private const int VAR_ENIGMA_BERRY_AVAILABLE_FRLG = 0x33; // 0x4033; unused but set by script command
 
     public ECBForm(SAV3 sav)
     {

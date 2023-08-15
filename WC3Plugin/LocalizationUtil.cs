@@ -56,5 +56,9 @@ public static class LocalizationUtil
         TranslationStrings.WriteFileError = dict[nameof(TranslationStrings.WriteFileError)];
         TranslationStrings.FileImported = dict[nameof(TranslationStrings.FileImported)];
         TranslationStrings.FileExported = dict[nameof(TranslationStrings.FileExported)];
+        TranslationStrings.RecordMixing = dict[nameof(TranslationStrings.RecordMixing)];
+        TranslationStrings.Item = dict[nameof(TranslationStrings.Item)];
+        TranslationStrings.Count = dict[nameof(TranslationStrings.Count)];
+        TranslationStrings.Save = dict[nameof(TranslationStrings.Save)];
     }
 }

@@ -16,3 +16,6 @@ ReadFileError = {0} Datei kann nicht geöffnet werden.
 WriteFileError = {0} Daten können nicht in Datei geschrieben werden.
 FileImported = {0} importiert!
 FileExported = {0} nach {1} exportiert!
+RecordMixing = Statistiktausch
+Item = Item
+Cout = Anzahl

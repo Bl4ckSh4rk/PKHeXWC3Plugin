@@ -16,3 +16,6 @@ ReadFileError = Unable to read {0} file.
 WriteFileError = Unable to write {0} data to file.
 FileImported = {0} imported!
 FileExported = {0} exported to {1}!
+RecordMixing = Record Mixing
+Item = Item
+Cout = Count

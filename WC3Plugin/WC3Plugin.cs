@@ -14,6 +14,7 @@ public class WC3Plugin : IPlugin
     private ToolStripMenuItem ect = new();
     private ToolStripMenuItem ecb = new();
     private ToolStripMenuItem wn3 = new();
+    private ToolStripMenuItem rm3 = new();
 
     public void Initialize(params object[] args)
     {
@@ -38,32 +39,34 @@ public class WC3Plugin : IPlugin
 
     private void AddPluginControl(ToolStripDropDownItem tools)
     {
-        ctrl = new(Name)
-        {
-            Visible = false,
-            Image = Properties.Resources.icon
-        };
+        ctrl = new(Name) { Visible = false, Image = Properties.Resources.icon };
         _ = (tools?.DropDownItems.Add(ctrl));
 
-        wc3 = new($"{TranslationStrings.MysteryGift} (WC3)") { Visible = false };
+        wc3 = new($"{TranslationStrings.MysteryGift} (WC3)") { Visible = false, Image = Properties.Resources.icon };
         wc3.Click += (s, e) => OpenWC3Form();
         _ = ctrl.DropDownItems.Add(wc3);
 
-        me3 = new($"{TranslationStrings.MysteryEvent} (ME3)") { Visible = false };
+        me3 = new($"{TranslationStrings.MysteryEvent} (ME3)") { Visible = false, Image = Properties.Resources.me3 };
         me3.Click += (s, e) => OpenME3Form();
         _ = ctrl.DropDownItems.Add(me3);
 
-        ect = new($"{TranslationStrings.ECardTrainer} (ECT)");
+        ect = new($"{TranslationStrings.ECardTrainer} (ECT)") { Image = Properties.Resources.ect };
         ect.Click += (s, e) => OpenECTForm();
         _ = ctrl.DropDownItems.Add(ect);
 
-        ecb = new($"{TranslationStrings.ECardBerry} (ECB)");
+        ecb = new($"{TranslationStrings.ECardBerry} (ECB)") { Image = Properties.Resources.ecb };
         ecb.Click += (s, e) => OpenECBForm();
         _ = ctrl.DropDownItems.Add(ecb);
 
-        wn3 = new($"{TranslationStrings.WonderNews} (WN3)") { Visible = false };
+        wn3 = new($"{TranslationStrings.WonderNews} (WN3)") { Visible = false, Image = Properties.Resources.wn3 };
         wn3.Click += (s, e) => OpenWN3Form();
         _ = ctrl.DropDownItems.Add(wn3);
+
+        _ = ctrl.DropDownItems.Add(new ToolStripSeparator());
+
+        rm3 = new(TranslationStrings.RecordMixing) { Visible = false, Image = Properties.Resources.rm3 };
+        rm3.Click += (s, e) => OpenRM3Form();
+        _ = ctrl.DropDownItems.Add(rm3);
     }
 
     private void OpenWC3Form()
@@ -91,13 +94,18 @@ public class WC3Plugin : IPlugin
         _ = new WN3Form((SAV3)SaveFileEditor.SAV).ShowDialog();
     }
 
+    private void OpenRM3Form()
+    {
+        _ = new RM3Form((SAV3)SaveFileEditor.SAV).ShowDialog();
+    }
+
     public void NotifySaveLoaded()
     {
         if (ctrl != null)
-            ctrl.Visible = SaveFileEditor.SAV is SAV3;
+            ctrl.Visible = SaveFileEditor.SAV is SAV3 && SaveFileEditor.SAV.State.Exportable;
 
         wc3.Visible = wn3.Visible = SaveFileEditor.SAV is SAV3E or SAV3FRLG;
-        me3.Visible = SaveFileEditor.SAV is SAV3RS or SAV3E;
+        me3.Visible = rm3.Visible = SaveFileEditor.SAV is SAV3RS or SAV3E;
     }
 
     public bool TryLoadFile(string filePath) => false;

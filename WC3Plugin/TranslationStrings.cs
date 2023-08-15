@@ -20,4 +20,8 @@ public static class TranslationStrings
     public static string WriteFileError { get; set; } = "Unable to write {0} data to file.";
     public static string FileImported { get; set; } = "{0} imported!";
     public static string FileExported { get; set; } = "{0} exported to {1}!";
+    public static string RecordMixing { get; set; } = "Record Mixing";
+    public static string Item { get; set; } = "Item";
+    public static string Count { get; set; } = "Count";
+    public static string Save { get; set; } = "Save";
 }

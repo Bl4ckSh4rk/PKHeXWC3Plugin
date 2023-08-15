@@ -68,7 +68,7 @@ public partial class ME3Form : Form
                 if (sav is not SAV3RS)
                     ((IGen3Wonder)sav).WonderCard = new(new byte[sav.Japanese ? WonderCard3.SIZE_JAP : WonderCard3.SIZE]);
 
-                if (data.Length > MysteryEvent3.SIZE)
+                if (sav is IGen3Hoenn && data.Length > MysteryEvent3.SIZE)
                 {
                     RecordMixing3Gift rm3 = new(data[MysteryEvent3.SIZE..]);
                     rm3.FixChecksum();
