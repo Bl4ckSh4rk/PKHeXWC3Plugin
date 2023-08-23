@@ -18,4 +18,5 @@ FileImported = {0} importiert!
 FileExported = {0} nach {1} exportiert!
 RecordMixing = Statistiktausch
 Item = Item
-Cout = Anzahl
+Count = Anzahl
+Save = Speichern

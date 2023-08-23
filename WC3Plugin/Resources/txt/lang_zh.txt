@@ -18,4 +18,5 @@ FileImported = {0} 导入!
 FileExported = {0} 导出到 {1}!
 RecordMixing = Record Mixing
 Item = Item
-Cout = Count
+Count = Count
+Save = Save

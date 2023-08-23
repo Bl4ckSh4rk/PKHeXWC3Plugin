@@ -8,13 +8,13 @@ public class WC3Plugin : IPlugin
     public int Priority => 1; // Loading order, lowest is first.
     public ISaveFileProvider SaveFileEditor { get; private set; } = null!;
 
-    private readonly ToolStripMenuItem ctrl = new(TranslationStrings.PluginName) { Visible = false, Image = Properties.Resources.icon };
-    private readonly ToolStripMenuItem wc3 = new($"{TranslationStrings.MysteryGift} (WC3)") { Visible = false, Image = Properties.Resources.icon };
-    private readonly ToolStripMenuItem me3 = new($"{TranslationStrings.MysteryEvent} (ME3)") { Visible = false, Image = Properties.Resources.me3 };
-    private readonly ToolStripMenuItem ect = new($"{TranslationStrings.ECardTrainer} (ECT)") { Image = Properties.Resources.ect };
-    private readonly ToolStripMenuItem ecb = new($"{TranslationStrings.ECardBerry} (ECB)") { Image = Properties.Resources.ecb };
-    private readonly ToolStripMenuItem wn3 = new($"{TranslationStrings.WonderNews} (WN3)") { Visible = false, Image = Properties.Resources.wn3 };
-    private readonly ToolStripMenuItem rm3 = new(TranslationStrings.RecordMixing) { Visible = false, Image = Properties.Resources.rm3 };
+    private ToolStripMenuItem ctrl = new();
+    private ToolStripMenuItem wc3 = new();
+    private ToolStripMenuItem me3 = new();
+    private ToolStripMenuItem ect = new();
+    private ToolStripMenuItem ecb = new();
+    private ToolStripMenuItem wn3 = new();
+    private ToolStripMenuItem rm3 = new();
     private readonly ToolStripSeparator rm3Separator = new() { Visible = false };
 
     public void Initialize(params object[] args)
@@ -39,25 +39,32 @@ public class WC3Plugin : IPlugin
 
     private void AddPluginControl(ToolStripDropDownItem tools)
     {
+        ctrl = new(Name) { Visible = false, Image = Properties.Resources.icon };
         _ = (tools?.DropDownItems.Add(ctrl));
 
+        wc3 = new($"{TranslationStrings.MysteryGift} (WC3)") { Visible = false, Image = Properties.Resources.icon };
         wc3.Click += (s, e) => { _ = new WC3Form((SAV3)SaveFileEditor.SAV).ShowDialog(); };
         _ = ctrl.DropDownItems.Add(wc3);
 
+        me3 = new($"{TranslationStrings.MysteryEvent} (ME3)") { Visible = false, Image = Properties.Resources.me3 };
         me3.Click += (s, e) => { _ = new ME3Form((SAV3)SaveFileEditor.SAV).ShowDialog(); };
         _ = ctrl.DropDownItems.Add(me3);
 
+        ect = new($"{TranslationStrings.ECardTrainer} (ECT)") { Image = Properties.Resources.ect };
         ect.Click += (s, e) => { _ = new ECTForm((SAV3)SaveFileEditor.SAV).ShowDialog(); };
         _ = ctrl.DropDownItems.Add(ect);
 
+        ecb = new($"{TranslationStrings.ECardBerry} (ECB)") { Image = Properties.Resources.ecb };
         ecb.Click += (s, e) => { _ = new ECBForm((SAV3)SaveFileEditor.SAV).ShowDialog(); };
         _ = ctrl.DropDownItems.Add(ecb);
 
+        wn3 = new($"{TranslationStrings.WonderNews} (WN3)") { Visible = false, Image = Properties.Resources.wn3 };
         wn3.Click += (s, e) => { _ = new WN3Form((SAV3)SaveFileEditor.SAV).ShowDialog(); };
         _ = ctrl.DropDownItems.Add(wn3);
 
         _ = ctrl.DropDownItems.Add(rm3Separator);
 
+        rm3 = new(TranslationStrings.RecordMixing) { Visible = false, Image = Properties.Resources.rm3 };
         rm3.Click += (s, e) => { _ = new RM3Form((SAV3)SaveFileEditor.SAV).ShowDialog(); };
         _ = ctrl.DropDownItems.Add(rm3);
     }
