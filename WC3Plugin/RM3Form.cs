@@ -31,8 +31,7 @@ public partial class RM3Form : Form
         RecordMixing3Gift rm3 = new(((IGen3Hoenn)sav).RecordMixingGift.Data)
         {
             Item = selected,
-            Count = (byte)(selected == 0 ? 0 : CountBox.Value),
-            Max = 1 // unused
+            Count = (byte)(selected == 0 ? 0 : CountBox.Value)
         };
         rm3.FixChecksum();
         ((IGen3Hoenn)sav).RecordMixingGift = rm3;
