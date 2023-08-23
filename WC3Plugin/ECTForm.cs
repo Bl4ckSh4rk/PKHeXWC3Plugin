@@ -9,6 +9,8 @@ public partial class ECTForm : Form
 
     private const int SIZE = 188;
 
+    private static readonly string FileFilter = $"{TranslationStrings.ECardTrainer} (*.ect)|*.ect|{TranslationStrings.AllFiles} (*.*)|*.*";
+
     public ECTForm(SAV3 sav)
     {
         this.sav = sav;
@@ -25,7 +27,7 @@ public partial class ECTForm : Form
     private void ECTImportButton_Click(object sender, EventArgs e)
     {
         using var ofd = new OpenFileDialog();
-        ofd.Filter = $"{TranslationStrings.ECardTrainer} (*.ect)|*.ect|{TranslationStrings.AllFiles} (*.*)|*.*";
+        ofd.Filter = FileFilter;
         ofd.Title = string.Format(TranslationStrings.OpenFile, TranslationStrings.ECardTrainer);
         ofd.FilterIndex = 1;
 
@@ -36,7 +38,7 @@ public partial class ECTForm : Form
     private void ECTExportButton_Click(object sender, EventArgs e)
     {
         using var sfd = new SaveFileDialog();
-        sfd.Filter = $"{TranslationStrings.ECardTrainer} (*.ect)|*.ect|{TranslationStrings.AllFiles} (*.*)|*.*";
+        sfd.Filter = FileFilter;
         sfd.Title = string.Format(TranslationStrings.SaveFile, TranslationStrings.ECardTrainer); ;
         sfd.FilterIndex = 1;
 
@@ -98,7 +100,7 @@ public partial class ECTForm : Form
         }
     }
 
-    void ECTForm_DragEnter(object sender, DragEventArgs e)
+    private void ECTForm_DragEnter(object sender, DragEventArgs e)
     {
         if (e is null)
             return;
@@ -106,7 +108,7 @@ public partial class ECTForm : Form
             e.Effect = DragDropEffects.Copy;
     }
 
-    void ECTForm_DragDrop(object sender, DragEventArgs e)
+    private void ECTForm_DragDrop(object sender, DragEventArgs e)
     {
         if (e?.Data?.GetData(DataFormats.FileDrop) is not string[] { Length: not 0 } files)
             return;
@@ -117,7 +119,7 @@ public partial class ECTForm : Form
     {
         uint chk = GetECTChecksum(data);
 
-        WriteUInt32LittleEndian(data.AsSpan(0xB8), chk);
+        WriteUInt32LittleEndian(data.AsSpan(SIZE - 4), chk);
 
         return data;
     }

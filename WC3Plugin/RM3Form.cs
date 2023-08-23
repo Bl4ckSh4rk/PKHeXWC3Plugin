@@ -23,13 +23,14 @@ public partial class RM3Form : Form
 
     private void SaveButton_Click(object sender, EventArgs e)
     {
-        ((IGen3Hoenn)sav).RecordMixingGift = new(((IGen3Hoenn)sav).RecordMixingGift.Data)
+        RecordMixing3Gift rm3 = new(((IGen3Hoenn)sav).RecordMixingGift.Data)
         {
             Item = (ushort)ItemComboBox.SelectedIndex,
             Count = (byte)(ItemComboBox.SelectedIndex < 1 ? 0 : CountBox.Value),
-            Max = 1
+            Max = 1 // unused
         };
-        ((IGen3Hoenn)sav).RecordMixingGift.FixChecksum();
+        rm3.FixChecksum();
+        ((IGen3Hoenn)sav).RecordMixingGift = rm3;
         Close();
     }
 

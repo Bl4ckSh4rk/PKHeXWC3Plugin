@@ -19,6 +19,7 @@ Get the latest release on **[ProjectPokémon](https://projectpokemon.org/home/fi
 - All checksums are fixed on import.
 - Files can be imported by selecting through the *Import* button or by *dropping* them into the plugin windows.
 - Editing *is not* and *will not* be supported, use suloku's [Gen 3 Mystery Gift Tool](https://projectpokemon.org/home/files/file/645-mystery-gift-tool-gen-3/).
+- Additionally *Record Mixing Gifts* can be edited for *RSE*. The specified item will be send over to other players you mix records with, until the counter reaches 0.
 
 ## How to use
 Put the plugin into the *plugins* folder in your PKHeX directory, then access it from the *Tools* menu.

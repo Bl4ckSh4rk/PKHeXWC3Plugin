@@ -10,6 +10,8 @@ public partial class WC3Form : Form
     private readonly int WC3FileSize;
     private readonly int WC3ScriptOffset;
 
+    private static readonly string FileFilter = $"{TranslationStrings.MysteryGift} (*.wc3)|*.wc3|{TranslationStrings.AllFiles} (*.*)|*.*";
+
     public WC3Form(SAV3 sav)
     {
         this.sav = sav;
@@ -30,7 +32,7 @@ public partial class WC3Form : Form
     private void WC3ImportButton_Click(object sender, EventArgs e)
     {
         using var ofd = new OpenFileDialog();
-        ofd.Filter = $"{TranslationStrings.MysteryGift} (*.wc3)|*.wc3|{TranslationStrings.AllFiles} (*.*)|*.*";
+        ofd.Filter = FileFilter;
         ofd.Title = string.Format(TranslationStrings.OpenFile, TranslationStrings.MysteryGift);
         ofd.FilterIndex = 1;
 
@@ -41,7 +43,7 @@ public partial class WC3Form : Form
     private void WC3ExportButton_Click(object sender, EventArgs e)
     {
         using var sfd = new SaveFileDialog();
-        sfd.Filter = $"{TranslationStrings.MysteryGift} (*.wc3)|*.wc3|{TranslationStrings.AllFiles} (*.*)|*.*";
+        sfd.Filter = FileFilter;
         sfd.Title = string.Format(TranslationStrings.SaveFile, TranslationStrings.MysteryGift);
         sfd.FilterIndex = 1;
 
@@ -115,7 +117,7 @@ public partial class WC3Form : Form
         }
     }
 
-    void WC3Form_DragEnter(object sender, DragEventArgs e)
+    private void WC3Form_DragEnter(object sender, DragEventArgs e)
     {
         if (e is null)
             return;
@@ -123,7 +125,7 @@ public partial class WC3Form : Form
             e.Effect = DragDropEffects.Copy;
     }
 
-    void WC3Form_DragDrop(object sender, DragEventArgs e)
+    private void WC3Form_DragDrop(object sender, DragEventArgs e)
     {
         if (e?.Data?.GetData(DataFormats.FileDrop) is not string[] { Length: not 0 } files)
             return;

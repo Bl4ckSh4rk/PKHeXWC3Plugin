@@ -6,6 +6,8 @@ public partial class ME3Form : Form
 {
     private readonly SAV3 sav;
 
+    private static readonly string FileFilter = $"{TranslationStrings.MysteryEvent} (*.me3)|*.me3|{TranslationStrings.AllFiles} (*.*)|*.*";
+
     public ME3Form(SAV3 sav)
     {
         this.sav = sav;
@@ -20,7 +22,7 @@ public partial class ME3Form : Form
     private void ME3ImportButton_Click(object sender, EventArgs e)
     {
         using var ofd = new OpenFileDialog();
-        ofd.Filter = $"{TranslationStrings.MysteryEvent} (*.me3)|*.me3|{TranslationStrings.AllFiles} (*.*)|*.*";
+        ofd.Filter = FileFilter;
         ofd.Title = string.Format(TranslationStrings.OpenFile, TranslationStrings.MysteryEvent);
         ofd.FilterIndex = 1;
 
@@ -31,7 +33,7 @@ public partial class ME3Form : Form
     private void ME3ExportButton_Click(object sender, EventArgs e)
     {
         using var sfd = new SaveFileDialog();
-        sfd.Filter = $"{TranslationStrings.MysteryEvent} (*.me3)|*.me3|{TranslationStrings.AllFiles} (*.*)|*.*";
+        sfd.Filter = FileFilter;
         sfd.Title = string.Format(TranslationStrings.SaveFile, TranslationStrings.MysteryEvent); ;
         sfd.FilterIndex = 1;
 
@@ -51,28 +53,25 @@ public partial class ME3Form : Form
                 byte[] data = File.ReadAllBytes(fileName);
 
                 Gen3MysteryData mystery;
+                if (sav is IGen3Wonder wonder) // FRLGE
+                {
+                    wonder.WonderCard = new(new byte[sav.Japanese ? WonderCard3.SIZE_JAP : WonderCard3.SIZE]);
 
-                if (sav is SAV3RS)
+                    mystery = new MysteryEvent3(data[..MysteryEvent3.SIZE]);
+                    ((MysteryEvent3)mystery).FixChecksum();
+                }
+                else // RS
                 {
                     mystery = new MysteryEvent3RS(data[..MysteryEvent3.SIZE]);
                     ((MysteryEvent3RS)mystery).FixChecksum();
                 }
-                else
-                {
-                    mystery = new MysteryEvent3(data[..MysteryEvent3.SIZE]);
-                    ((MysteryEvent3)mystery).FixChecksum();
-                }
-
                 sav.MysteryData = mystery;
 
-                if (sav is not SAV3RS)
-                    ((IGen3Wonder)sav).WonderCard = new(new byte[sav.Japanese ? WonderCard3.SIZE_JAP : WonderCard3.SIZE]);
-
-                if (sav is IGen3Hoenn && data.Length > MysteryEvent3.SIZE)
+                if (sav is IGen3Hoenn hoenn && data.Length > MysteryEvent3.SIZE)
                 {
                     RecordMixing3Gift rm3 = new(data[MysteryEvent3.SIZE..]);
                     rm3.FixChecksum();
-                    ((IGen3Hoenn)sav).RecordMixingGift = rm3;
+                    hoenn.RecordMixingGift = rm3;
                 }
 
                 success = true;
@@ -116,7 +115,7 @@ public partial class ME3Form : Form
         }
     }
 
-    void ME3Form_DragEnter(object sender, DragEventArgs e)
+    private void ME3Form_DragEnter(object sender, DragEventArgs e)
     {
         if (e is null)
             return;
@@ -124,7 +123,7 @@ public partial class ME3Form : Form
             e.Effect = DragDropEffects.Copy;
     }
 
-    void ME3Form_DragDrop(object sender, DragEventArgs e)
+    private void ME3Form_DragDrop(object sender, DragEventArgs e)
     {
         if (e?.Data?.GetData(DataFormats.FileDrop) is not string[] { Length: not 0 } files)
             return;

@@ -13,6 +13,8 @@ public partial class ECBForm : Form
     private const int VAR_ENIGMA_BERRY_AVAILABLE_RSE = 0x2D;  // 0x402D
     private const int VAR_ENIGMA_BERRY_AVAILABLE_FRLG = 0x33; // 0x4033; unused but set by script command
 
+    private static readonly string FileFilter = $"{TranslationStrings.ECardBerry} (*.ecb)|*.ecb|{TranslationStrings.AllFiles} (*.*)|*.*";
+
     public ECBForm(SAV3 sav)
     {
         this.sav = sav;
@@ -34,7 +36,7 @@ public partial class ECBForm : Form
     private void ECBImportButton_Click(object sender, EventArgs e)
     {
         using var ofd = new OpenFileDialog();
-        ofd.Filter = $"{TranslationStrings.ECardBerry} (*.ecb)|*.ecb|{TranslationStrings.AllFiles} (*.*)|*.*";
+        ofd.Filter = FileFilter;
         ofd.Title = string.Format(TranslationStrings.OpenFile, TranslationStrings.ECardBerry);
         ofd.FilterIndex = 1;
 
@@ -45,7 +47,7 @@ public partial class ECBForm : Form
     private void ECBExportButton_Click(object sender, EventArgs e)
     {
         using var sfd = new SaveFileDialog();
-        sfd.Filter = $"{TranslationStrings.ECardBerry} (*.ecb)|*.ecb|{TranslationStrings.AllFiles} (*.*)|*.*";
+        sfd.Filter = FileFilter;
         sfd.Title = string.Format(TranslationStrings.SaveFile, TranslationStrings.ECardBerry); ;
         sfd.FilterIndex = 1;
 
@@ -108,7 +110,7 @@ public partial class ECBForm : Form
         }
     }
 
-    void ECBForm_DragEnter(object sender, DragEventArgs e)
+    private void ECBForm_DragEnter(object sender, DragEventArgs e)
     {
         if (e is null)
             return;
@@ -116,7 +118,7 @@ public partial class ECBForm : Form
             e.Effect = DragDropEffects.Copy;
     }
 
-    void ECBForm_DragDrop(object sender, DragEventArgs e)
+    private void ECBForm_DragDrop(object sender, DragEventArgs e)
     {
         if (e?.Data?.GetData(DataFormats.FileDrop) is not string[] { Length: not 0 } files)
             return;

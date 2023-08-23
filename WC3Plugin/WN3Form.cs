@@ -8,6 +8,8 @@ public partial class WN3Form : Form
 
     private readonly int NewsSize;
 
+    private static readonly string FileFilter = $"{TranslationStrings.WonderNews} (*.wn3)|*.wn3|{TranslationStrings.AllFiles} (*.*)|*.*";
+
     public WN3Form(SAV3 sav)
     {
         this.sav = sav;
@@ -26,7 +28,7 @@ public partial class WN3Form : Form
     private void WN3ImportButton_Click(object sender, EventArgs e)
     {
         using var ofd = new OpenFileDialog();
-        ofd.Filter = $"{TranslationStrings.WonderNews} (*.wn3)|*.wn3|{TranslationStrings.AllFiles} (*.*)|*.*";
+        ofd.Filter = FileFilter;
         ofd.Title = string.Format(TranslationStrings.OpenFile, TranslationStrings.WonderNews);
         ofd.FilterIndex = 1;
 
@@ -37,7 +39,7 @@ public partial class WN3Form : Form
     private void WN3ExportButton_Click(object sender, EventArgs e)
     {
         using var sfd = new SaveFileDialog();
-        sfd.Filter = $"{TranslationStrings.WonderNews} (*.wn3)|*.wn3|{TranslationStrings.AllFiles} (*.*)|*.*";
+        sfd.Filter = FileFilter;
         sfd.Title = string.Format(TranslationStrings.SaveFile, TranslationStrings.WonderNews);
         sfd.FilterIndex = 1;
 
@@ -104,7 +106,7 @@ public partial class WN3Form : Form
         }
     }
 
-    void WN3Form_DragEnter(object sender, DragEventArgs e)
+    private void WN3Form_DragEnter(object sender, DragEventArgs e)
     {
         if (e is null)
             return;
@@ -112,7 +114,7 @@ public partial class WN3Form : Form
             e.Effect = DragDropEffects.Copy;
     }
 
-    void WN3Form_DragDrop(object sender, DragEventArgs e)
+    private void WN3Form_DragDrop(object sender, DragEventArgs e)
     {
         if (e?.Data?.GetData(DataFormats.FileDrop) is not string[] { Length: not 0 } files)
             return;
