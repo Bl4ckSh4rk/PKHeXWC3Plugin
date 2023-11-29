@@ -7,8 +7,10 @@ This includes the following:
 - e-Card Berries (ECB) for *all Gen. 3 games*
 - Wonder News (WN3) for *FireRed, LeafGreen and Emerald*
 
+![Screenshot](https://repository-images.githubusercontent.com/267008485/c249d573-c881-49e5-be4d-e22a9825b9ae)
+
 ## Download
-Get the latest release on **[ProjectPokémon](https://projectpokemon.org/home/files/file/4161-pkhex-plugin-wc3-plugin/)**
+Get the latest release on **[ProjectPokémon.org](https://projectpokemon.org/home/files/file/4161-pkhex-plugin-wc3-plugin/)**
 
 ## Compatibility Notice
 - The games can not have a *Mystery Gift* and a *Mystery Event* at the same time, importing one will override the other!
