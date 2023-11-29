@@ -6,23 +6,15 @@ public partial class WC3Form : Form
 {
     private readonly SAV3 sav;
 
-    private readonly int CardSize;
-    private readonly int WC3FileSize;
-    private readonly int WC3ScriptOffset;
-
     private static readonly string FileFilter = $"{TranslationStrings.MysteryGift} (*.wc3)|*.wc3|{TranslationStrings.AllFiles} (*.*)|*.*";
 
     public WC3Form(SAV3 sav)
     {
         this.sav = sav;
 
-        CardSize = sav.Japanese ? WonderCard3.SIZE_JAP : WonderCard3.SIZE;
-        WC3ScriptOffset = CardSize + 0x50;
-        WC3FileSize = WC3ScriptOffset + MysteryEvent3.SIZE;
-
         InitializeComponent();
 
-        if (!((IGen3Wonder)sav).WonderCard.Data.IsEmpty())
+        if (sav.HasWC3())
         {
             TitleBox.Text = ((IGen3Wonder)sav).WonderCard.Title.Trim();
             WC3ExportButton.Enabled = true;
@@ -53,26 +45,17 @@ public partial class WC3Form : Form
 
     private void ImportWC3(string fileName)
     {
-        bool success = false;
-        WonderCard3 wc3 = new(new byte[CardSize]);
         long fileSize = new FileInfo(fileName).Length;
 
-        if (fileSize == WC3FileSize)
+        if (fileSize == sav.GetWC3FileSize())
         {
             try
             {
-                byte[] data = File.ReadAllBytes(fileName);
+                byte[] wc3 = File.ReadAllBytes(fileName);
+                sav.ImportWC3(wc3);
 
-                wc3 = new(data[0..CardSize]);
-                wc3.FixChecksum();
-
-                MysteryEvent3 me3 = new(data[WC3ScriptOffset..]);
-                me3.FixChecksum();
-
-                ((IGen3Wonder)sav).WonderCard = wc3;
-                sav.MysteryData = me3;
-
-                success = true;
+                Close();
+                _ = MessageBox.Show($"{string.Format(TranslationStrings.FileImported, TranslationStrings.MysteryGift)}\n\n\"{((IGen3Wonder)sav).WonderCard.Title.Trim()}\"", TranslationStrings.Success, MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
             catch
             {
@@ -81,39 +64,22 @@ public partial class WC3Form : Form
         }
         else
         {
-            _ = MessageBox.Show(string.Format(TranslationStrings.InvalidFileSize, fileSize, WC3FileSize), TranslationStrings.Error, MessageBoxButtons.OK, MessageBoxIcon.Error);
-        }
-
-        if (success)
-        {
-            Close();
-            _ = MessageBox.Show($"{string.Format(TranslationStrings.FileImported, TranslationStrings.MysteryGift)}\n\n\"{wc3.Title.Trim()}\"", TranslationStrings.Success, MessageBoxButtons.OK, MessageBoxIcon.Information);
+            _ = MessageBox.Show(string.Format(TranslationStrings.InvalidFileSize, fileSize, sav.GetWC3FileSize()), TranslationStrings.Error, MessageBoxButtons.OK, MessageBoxIcon.Error);
         }
     }
 
     private void ExportWC3(string fileName)
     {
-        bool success = false;
-
-        byte[] data = new byte[WC3FileSize];
-        ((IGen3Wonder)sav).WonderCard.Data.CopyTo(data, 0);
-        sav.MysteryData.Data.CopyTo(data, WC3ScriptOffset);
-
         try
         {
-            File.WriteAllBytes(fileName, data);
+            File.WriteAllBytes(fileName, sav.ExportWC3());
 
-            success = true;
+            Close();
+            _ = MessageBox.Show(string.Format(TranslationStrings.FileExported, TranslationStrings.MysteryGift, fileName), TranslationStrings.Success, MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
         catch
         {
             _ = MessageBox.Show(string.Format(TranslationStrings.WriteFileError, TranslationStrings.MysteryGift), TranslationStrings.Error, MessageBoxButtons.OK, MessageBoxIcon.Error);
-        }
-
-        if (success)
-        {
-            Close();
-            _ = MessageBox.Show(string.Format(TranslationStrings.FileExported, TranslationStrings.MysteryGift, fileName), TranslationStrings.Success, MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
     }
 

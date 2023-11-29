@@ -19,7 +19,7 @@ public class WC3Plugin : IPlugin
 
     public void Initialize(params object[] args)
     {
-        Console.WriteLine($"Loading {Name}...");
+        Console.WriteLine($"Loading {nameof(WC3Plugin)}...");
         if (args != null)
         {
             LocalizationUtil.SetLocalization(GameInfo.CurrentLanguage);
@@ -75,8 +75,8 @@ public class WC3Plugin : IPlugin
         {
             ctrl.Visible = SaveFileEditor.SAV is SAV3 && SaveFileEditor.SAV.State.Exportable;
 
-            wc3.Visible = wn3.Visible = SaveFileEditor.SAV is SAV3E or SAV3FRLG;
-            me3.Visible = rm3.Visible = rm3Separator.Visible = SaveFileEditor.SAV is SAV3RS or SAV3E;
+            wc3.Visible = wn3.Visible = SaveFileEditor.SAV is IGen3Wonder; // FRLGE
+            me3.Visible = rm3.Visible = rm3Separator.Visible = SaveFileEditor.SAV is IGen3Hoenn; // RSE
         }
     }
 

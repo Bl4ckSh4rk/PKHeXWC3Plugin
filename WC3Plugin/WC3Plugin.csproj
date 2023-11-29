@@ -2,9 +2,9 @@
 
   <PropertyGroup>
     <Description>WC3 Plugin</Description>
-    <FileVersion>2.1.1.0</FileVersion>
-    <TargetFramework>net7.0-windows</TargetFramework>
-    <LangVersion>11</LangVersion>
+    <FileVersion>2.2.0.0</FileVersion>
+    <TargetFramework>net8.0-windows</TargetFramework>
+    <LangVersion>12</LangVersion>
     <UseWindowsForms>true</UseWindowsForms>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>

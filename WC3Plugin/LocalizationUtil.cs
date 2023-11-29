@@ -28,7 +28,7 @@ public static class LocalizationUtil
         if (lines.Count == 0)
             return;
 
-        Dictionary<string, string> dict = new();
+        Dictionary<string, string> dict = [];
         foreach (var line in lines)
         {
             var index = line.IndexOf(TranslationSplitter, StringComparison.Ordinal);

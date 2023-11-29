@@ -1,13 +1,11 @@
 ﻿using PKHeX.Core;
-using static System.Buffers.Binary.BinaryPrimitives;
 
 namespace WC3Plugin;
 
 public partial class ECTForm : Form
 {
     private readonly SAV3 sav;
-
-    private const int SIZE = 188;
+    private readonly byte[] ect;
 
     private static readonly string FileFilter = $"{TranslationStrings.ECardTrainer} (*.ect)|*.ect|{TranslationStrings.AllFiles} (*.*)|*.*";
 
@@ -17,9 +15,9 @@ public partial class ECTForm : Form
 
         InitializeComponent();
 
-        if (!sav.GetEReaderTrainer().IsEmpty())
+        if (!(ect = sav.ExportECT()).IsEmpty())
         {
-            TitleBox.Text = StringConverter3.GetString(sav.GetEReaderTrainer().AsSpan(4, sav.Japanese ? 5 : 7), sav.Japanese).Trim();
+            TitleBox.Text = StringConverter3.GetString(ect.AsSpan(4, sav.Japanese ? 5 : 7), sav.Japanese).Trim();
             ECTExportButton.Enabled= true;
         }
     }
@@ -48,18 +46,17 @@ public partial class ECTForm : Form
 
     private void ImportECT(string fileName)
     {
-        bool success = false;
-        string TrainerName = string.Empty;
         long fileSize = new FileInfo(fileName).Length;
 
-        if (fileSize == SIZE)
+        if (fileSize == sav.GetECTFileSize())
         {
             try
             {
-                sav.SetEReaderTrainer(FixECTChecksum(File.ReadAllBytes(fileName)));
-                TrainerName = StringConverter3.GetString(sav.GetEReaderTrainer().AsSpan(4, sav.Japanese ? 5 : 7), sav.Japanese).Trim();
+                sav.ImportECB(File.ReadAllBytes(fileName));
+                string TrainerName = StringConverter3.GetString(ect.AsSpan(4, sav.Japanese ? 5 : 7), sav.Japanese).Trim();
 
-                success = true;
+                Close();
+                _ = MessageBox.Show($"{string.Format(TranslationStrings.FileImported, TranslationStrings.ECardTrainer)}\n\n\"{TrainerName}\"", TranslationStrings.Success, MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
             catch
             {
@@ -68,35 +65,22 @@ public partial class ECTForm : Form
         }
         else
         {
-            _ = MessageBox.Show(string.Format(TranslationStrings.InvalidFileSize, fileSize, SIZE), TranslationStrings.Error, MessageBoxButtons.OK, MessageBoxIcon.Error);
-        }
-
-        if (success)
-        {
-            Close();
-            _ = MessageBox.Show($"{string.Format(TranslationStrings.FileImported, TranslationStrings.ECardTrainer)}\n\n\"{TrainerName}\"", TranslationStrings.Success, MessageBoxButtons.OK, MessageBoxIcon.Information);
+            _ = MessageBox.Show(string.Format(TranslationStrings.InvalidFileSize, fileSize, sav.GetECTFileSize()), TranslationStrings.Error, MessageBoxButtons.OK, MessageBoxIcon.Error);
         }
     }
 
     private void ExportECT(string fileName)
     {
-        bool success = false;
-
         try
         {
-            File.WriteAllBytes(fileName, sav.GetEReaderTrainer());
+            File.WriteAllBytes(fileName, ect);
 
-            success = true;
+            Close();
+            _ = MessageBox.Show(string.Format(TranslationStrings.FileExported, TranslationStrings.ECardTrainer, fileName), TranslationStrings.Success, MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
         catch
         {
             _ = MessageBox.Show(string.Format(TranslationStrings.WriteFileError, TranslationStrings.ECardTrainer), TranslationStrings.Error, MessageBoxButtons.OK, MessageBoxIcon.Error);
-        }
-
-        if (success)
-        {
-            Close();
-            _ = MessageBox.Show(string.Format(TranslationStrings.FileExported, TranslationStrings.ECardTrainer, fileName), TranslationStrings.Success, MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
     }
 
@@ -113,26 +97,5 @@ public partial class ECTForm : Form
         if (e?.Data?.GetData(DataFormats.FileDrop) is not string[] { Length: not 0 } files)
             return;
         ImportECT(files[0]);
-    }
-
-    private static byte[] FixECTChecksum(byte[] data)
-    {
-        uint chk = GetECTChecksum(data);
-
-        WriteUInt32LittleEndian(data.AsSpan(SIZE - 4), chk);
-
-        return data;
-    }
-
-    private static uint GetECTChecksum(byte[] data)
-    {
-        uint chk = 0;
-
-        for (int i = 0; i < SIZE - 4; i += 4)
-        {
-            chk += data[i] + (uint)(data[i + 1] << 8) + (uint)(data[i + 2] << 16) + (uint)(data[i + 3] << 24);
-        }
-
-        return chk & 0xFFFFFFFF;
     }
 }

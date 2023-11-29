@@ -6,19 +6,15 @@ public partial class WN3Form : Form
 {
     private readonly SAV3 sav;
 
-    private readonly int NewsSize;
-
     private static readonly string FileFilter = $"{TranslationStrings.WonderNews} (*.wn3)|*.wn3|{TranslationStrings.AllFiles} (*.*)|*.*";
 
     public WN3Form(SAV3 sav)
     {
         this.sav = sav;
 
-        NewsSize = sav.Japanese ? WonderNews3.SIZE_JAP : WonderNews3.SIZE;
-
         InitializeComponent();
 
-        if (!((IGen3Wonder)sav).WonderNews.Data.IsEmpty())
+        if (sav.HasWN3())
         {
             TitleBox.Text = ((IGen3Wonder)sav).WonderNews.Title.Trim();
             WN3ExportButton.Enabled = true;
@@ -49,20 +45,17 @@ public partial class WN3Form : Form
 
     private void ImportWN3(string fileName)
     {
-        bool success = false;
-        WonderNews3 wn3 = new(new byte[NewsSize]);
         long fileSize = new FileInfo(fileName).Length;
 
-        if (fileSize == NewsSize)
+        if (fileSize == sav.GetWN3FileSize())
         {
             try
             {
-                wn3 = new(File.ReadAllBytes(fileName));
-                wn3.FixChecksum();
+                byte[] wn3 = File.ReadAllBytes(fileName);
+                sav.ImportECB(wn3);
 
-                ((IGen3Wonder)sav).WonderNews = wn3;
-
-                success = true;
+                Close();
+                _ = MessageBox.Show($"{string.Format(TranslationStrings.FileImported, TranslationStrings.WonderNews)}\n\n\"{((IGen3Wonder)sav).WonderNews.Title.Trim()}\"", TranslationStrings.Success, MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
             catch
             {
@@ -71,38 +64,22 @@ public partial class WN3Form : Form
         }
         else
         {
-            _ = MessageBox.Show(string.Format(TranslationStrings.InvalidFileSize, fileSize, NewsSize), TranslationStrings.Error, MessageBoxButtons.OK, MessageBoxIcon.Error);
-        }
-
-        if (success)
-        {
-            Close();
-            _ = MessageBox.Show($"{string.Format(TranslationStrings.FileImported, TranslationStrings.WonderNews)}\n\n\"{wn3.Title.Trim()}\"", TranslationStrings.Success, MessageBoxButtons.OK, MessageBoxIcon.Information);
+            _ = MessageBox.Show(string.Format(TranslationStrings.InvalidFileSize, fileSize, sav.GetWN3FileSize()), TranslationStrings.Error, MessageBoxButtons.OK, MessageBoxIcon.Error);
         }
     }
 
     private void ExportWN3(string fileName)
     {
-        bool success = false;
-
-        byte[] data = new byte[NewsSize];
-        ((IGen3Wonder)sav).WonderNews.Data.CopyTo(data, 0);
-
         try
         {
-            File.WriteAllBytes(fileName, data);
+            File.WriteAllBytes(fileName, sav.ExportWN3());
 
-            success = true;
+            Close();
+            _ = MessageBox.Show(string.Format(TranslationStrings.FileExported, TranslationStrings.WonderNews, fileName), TranslationStrings.Success, MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
         catch
         {
             _ = MessageBox.Show(string.Format(TranslationStrings.WriteFileError, TranslationStrings.WonderNews), TranslationStrings.Error, MessageBoxButtons.OK, MessageBoxIcon.Error);
-        }
-
-        if (success)
-        {
-            Close();
-            _ = MessageBox.Show(string.Format(TranslationStrings.FileExported, TranslationStrings.WonderNews, fileName), TranslationStrings.Success, MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
     }
 

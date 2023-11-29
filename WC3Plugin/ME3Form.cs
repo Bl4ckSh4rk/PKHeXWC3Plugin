@@ -14,9 +14,7 @@ public partial class ME3Form : Form
 
         InitializeComponent();
 
-        ME3ExportButton.Enabled = sav is SAV3RS
-            ? !sav.MysteryData.Data.IsEmpty()
-            : !sav.MysteryData.Data.IsEmpty() && ((IGen3Wonder)sav).WonderCard.Data.IsEmpty();
+        ME3ExportButton.Enabled = sav.HasME3();
     }
 
     private void ME3ImportButton_Click(object sender, EventArgs e)
@@ -43,38 +41,17 @@ public partial class ME3Form : Form
 
     private void ImportME3(string fileName)
     {
-        bool success = false;
         long fileSize = new FileInfo(fileName).Length;
 
         if (fileSize is MysteryEvent3.SIZE or (MysteryEvent3.SIZE + RecordMixing3Gift.SIZE))
         {
             try
             {
-                byte[] data = File.ReadAllBytes(fileName);
+                byte[] me3 = File.ReadAllBytes(fileName);
+                sav.ImportME3(me3);
 
-                Gen3MysteryData mystery;
-                if (sav is IGen3Wonder wonder) // FRLGE
-                {
-                    wonder.WonderCard = new(new byte[sav.Japanese ? WonderCard3.SIZE_JAP : WonderCard3.SIZE]);
-
-                    mystery = new MysteryEvent3(data[..MysteryEvent3.SIZE]);
-                    ((MysteryEvent3)mystery).FixChecksum();
-                }
-                else // RS
-                {
-                    mystery = new MysteryEvent3RS(data[..MysteryEvent3.SIZE]);
-                    ((MysteryEvent3RS)mystery).FixChecksum();
-                }
-                sav.MysteryData = mystery;
-
-                if (sav is IGen3Hoenn hoenn && data.Length > MysteryEvent3.SIZE)
-                {
-                    RecordMixing3Gift rm3 = new(data[MysteryEvent3.SIZE..]);
-                    rm3.FixChecksum();
-                    hoenn.RecordMixingGift = rm3;
-                }
-
-                success = true;
+                Close();
+                _ = MessageBox.Show(string.Format(TranslationStrings.FileImported, TranslationStrings.MysteryEvent), TranslationStrings.Success, MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
             catch
             {
@@ -85,33 +62,20 @@ public partial class ME3Form : Form
         {
             _ = MessageBox.Show(string.Format(TranslationStrings.InvalidFileSize, fileSize, MysteryEvent3.SIZE), TranslationStrings.Error, MessageBoxButtons.OK, MessageBoxIcon.Error);
         }
-
-        if (success)
-        {
-            Close();
-            _ = MessageBox.Show(string.Format(TranslationStrings.FileImported, TranslationStrings.MysteryEvent), TranslationStrings.Success, MessageBoxButtons.OK, MessageBoxIcon.Information);
-        }
     }
 
     private void ExportME3(string fileName)
     {
-        bool success = false;
-
         try
         {
-            File.WriteAllBytes(fileName, sav.MysteryData.Data);
+            File.WriteAllBytes(fileName, sav.ExportME3());
 
-            success = true;
+            Close();
+            _ = MessageBox.Show(string.Format(TranslationStrings.FileExported, TranslationStrings.MysteryEvent, fileName), TranslationStrings.Success, MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
         catch
         {
             _ = MessageBox.Show(string.Format(TranslationStrings.WriteFileError, TranslationStrings.MysteryEvent), TranslationStrings.Error, MessageBoxButtons.OK, MessageBoxIcon.Error);
-        }
-
-        if (success)
-        {
-            Close();
-            _ = MessageBox.Show(string.Format(TranslationStrings.FileExported, TranslationStrings.MysteryEvent, fileName), TranslationStrings.Success, MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
     }
 

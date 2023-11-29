@@ -1,17 +1,11 @@
 ﻿using PKHeX.Core;
-using static System.Buffers.Binary.BinaryPrimitives;
 
 namespace WC3Plugin;
 
 public partial class ECBForm : Form
 {
     private readonly SAV3 sav;
-
-    private readonly int BerrySize;
-    private const int SIZE_RS = 1328;
-    private const int SIZE_FRLGE = 52;
-    private const int VAR_ENIGMA_BERRY_AVAILABLE_RSE = 0x2D;  // 0x402D
-    private const int VAR_ENIGMA_BERRY_AVAILABLE_FRLG = 0x33; // 0x4033; unused but set by script command
+    private readonly byte[] ecb;
 
     private static readonly string FileFilter = $"{TranslationStrings.ECardBerry} (*.ecb)|*.ecb|{TranslationStrings.AllFiles} (*.*)|*.*";
 
@@ -19,14 +13,9 @@ public partial class ECBForm : Form
     {
         this.sav = sav;
 
-        if (sav is SAV3RS)
-            BerrySize = SIZE_RS;
-        else
-            BerrySize = SIZE_FRLGE;
-
         InitializeComponent();
 
-        if (!sav.GetEReaderBerry().IsEmpty())
+        if (!(ecb = sav.ExportECB()).IsEmpty())
         {
             TitleBox.Text = sav.EBerryName.Trim();
             ECBExportButton.Enabled = true;
@@ -57,19 +46,17 @@ public partial class ECBForm : Form
 
     private void ImportECB(string fileName)
     {
-        bool success = false;
-        string BerryName = string.Empty;
         long fileSize = new FileInfo(fileName).Length;
 
-        if (fileSize == BerrySize)
+        if (fileSize == sav.GetECBFileSize())
         {
             try
             {
-                sav.SetEReaderBerry(FixECBChecksum(File.ReadAllBytes(fileName)));
-                BerryName = sav.EBerryName.Trim();
-                sav.SetWork((sav is SAV3RS or SAV3E) ? VAR_ENIGMA_BERRY_AVAILABLE_RSE : VAR_ENIGMA_BERRY_AVAILABLE_FRLG, 1);
+                sav.ImportECB(File.ReadAllBytes(fileName));
+                string BerryName = sav.EBerryName;
 
-                success = true;
+                Close();
+                _ = MessageBox.Show($"{string.Format(TranslationStrings.FileImported, TranslationStrings.ECardBerry)}\n\n\"{BerryName}\"", TranslationStrings.Success, MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
             catch
             {
@@ -78,35 +65,22 @@ public partial class ECBForm : Form
         }
         else
         {
-            _ = MessageBox.Show(string.Format(TranslationStrings.InvalidFileSize, fileSize, BerrySize), TranslationStrings.Error, MessageBoxButtons.OK, MessageBoxIcon.Error);
-        }
-
-        if (success)
-        {
-            Close();
-            _ = MessageBox.Show($"{string.Format(TranslationStrings.FileImported, TranslationStrings.ECardBerry)}\n\n\"{BerryName}\"", TranslationStrings.Success, MessageBoxButtons.OK, MessageBoxIcon.Information);
+            _ = MessageBox.Show(string.Format(TranslationStrings.InvalidFileSize, fileSize, sav.GetECBFileSize()), TranslationStrings.Error, MessageBoxButtons.OK, MessageBoxIcon.Error);
         }
     }
 
     private void ExportECB(string fileName)
     {
-        bool success = false;
-
         try
         {
-            File.WriteAllBytes(fileName, sav.GetEReaderBerry());
+            File.WriteAllBytes(fileName, ecb);
 
-            success = true;
+            Close();
+            _ = MessageBox.Show(string.Format(TranslationStrings.FileExported, TranslationStrings.ECardBerry, fileName), TranslationStrings.Success, MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
         catch
         {
             _ = MessageBox.Show(string.Format(TranslationStrings.WriteFileError, TranslationStrings.ECardBerry), TranslationStrings.Error, MessageBoxButtons.OK, MessageBoxIcon.Error);
-        }
-
-        if (success)
-        {
-            Close();
-            _ = MessageBox.Show(string.Format(TranslationStrings.FileExported, TranslationStrings.ECardBerry, fileName), TranslationStrings.Success, MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
     }
 
@@ -123,37 +97,5 @@ public partial class ECBForm : Form
         if (e?.Data?.GetData(DataFormats.FileDrop) is not string[] { Length: not 0 } files)
             return;
         ImportECB(files[0]);
-    }
-
-    private static byte[] FixECBChecksum(byte[] data)
-    {
-        ushort chk = GetECBChecksum(data);
-
-        WriteUInt16LittleEndian(data.AsSpan(data.Length - 4), chk);
-
-        return data;
-    }
-
-    private static ushort GetECBChecksum(byte[] data)
-    {
-        ushort chk = 0;
-
-        if (data.Length == SIZE_RS)
-        {
-            for (int i = 0; i < SIZE_RS - 4; i++)
-            {
-                if (i < 0xC || i >= 0x14)
-                    chk += (ushort)(data[i] & 0xFF);
-            }
-        }
-        else
-        {
-            for (int i = 0; i < SIZE_FRLGE - 4; i++)
-            {
-                chk += (ushort)(data[i] & 0xFF);
-            }
-        }
-
-        return chk;
     }
 }
