@@ -51,16 +51,16 @@ public partial class ME3Form : Form
                 sav.ImportME3(me3);
 
                 Close();
-                _ = MessageBox.Show(string.Format(TranslationStrings.FileImported, TranslationStrings.MysteryEvent), TranslationStrings.Success, MessageBoxButtons.OK, MessageBoxIcon.Information);
+                Message.ShowFileImported(TranslationStrings.MysteryEvent);
             }
             catch
             {
-                _ = MessageBox.Show(string.Format(TranslationStrings.ReadFileError, TranslationStrings.MysteryEvent), TranslationStrings.Error, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                Message.ShowFileReadError(TranslationStrings.MysteryEvent);
             }
         }
         else
         {
-            _ = MessageBox.Show(string.Format(TranslationStrings.InvalidFileSize, fileSize, MysteryEvent3.SIZE), TranslationStrings.Error, MessageBoxButtons.OK, MessageBoxIcon.Error);
+            Message.ShowInvalidFileSize(fileSize, MysteryEvent3.SIZE);
         }
     }
 
@@ -71,11 +71,11 @@ public partial class ME3Form : Form
             File.WriteAllBytes(fileName, sav.ExportME3());
 
             Close();
-            _ = MessageBox.Show(string.Format(TranslationStrings.FileExported, TranslationStrings.MysteryEvent, fileName), TranslationStrings.Success, MessageBoxButtons.OK, MessageBoxIcon.Information);
+            Message.ShowFileExported(TranslationStrings.MysteryEvent, fileName);
         }
         catch
         {
-            _ = MessageBox.Show(string.Format(TranslationStrings.WriteFileError, TranslationStrings.MysteryEvent), TranslationStrings.Error, MessageBoxButtons.OK, MessageBoxIcon.Error);
+            Message.ShowFileWriteError(TranslationStrings.MysteryEvent);
         }
     }
 

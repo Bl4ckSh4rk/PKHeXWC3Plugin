@@ -56,16 +56,16 @@ public partial class ECTForm : Form
                 string TrainerName = StringConverter3.GetString(ect.AsSpan(4, sav.Japanese ? 5 : 7), sav.Japanese).Trim();
 
                 Close();
-                _ = MessageBox.Show($"{string.Format(TranslationStrings.FileImported, TranslationStrings.ECardTrainer)}\n\n\"{TrainerName}\"", TranslationStrings.Success, MessageBoxButtons.OK, MessageBoxIcon.Information);
+                Message.ShowFileImported(TranslationStrings.ECardTrainer, TrainerName);
             }
             catch
             {
-                _ = MessageBox.Show(string.Format(TranslationStrings.ReadFileError, TranslationStrings.ECardTrainer), TranslationStrings.Error, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                Message.ShowFileReadError(TranslationStrings.ECardTrainer);
             }
         }
         else
         {
-            _ = MessageBox.Show(string.Format(TranslationStrings.InvalidFileSize, fileSize, sav.GetECTFileSize()), TranslationStrings.Error, MessageBoxButtons.OK, MessageBoxIcon.Error);
+            Message.ShowInvalidFileSize(fileSize, sav.GetECTFileSize());
         }
     }
 
@@ -76,11 +76,11 @@ public partial class ECTForm : Form
             File.WriteAllBytes(fileName, ect);
 
             Close();
-            _ = MessageBox.Show(string.Format(TranslationStrings.FileExported, TranslationStrings.ECardTrainer, fileName), TranslationStrings.Success, MessageBoxButtons.OK, MessageBoxIcon.Information);
+            Message.ShowFileExported(TranslationStrings.ECardTrainer, fileName);
         }
         catch
         {
-            _ = MessageBox.Show(string.Format(TranslationStrings.WriteFileError, TranslationStrings.ECardTrainer), TranslationStrings.Error, MessageBoxButtons.OK, MessageBoxIcon.Error);
+            Message.ShowFileWriteError(TranslationStrings.ECardTrainer);
         }
     }
 

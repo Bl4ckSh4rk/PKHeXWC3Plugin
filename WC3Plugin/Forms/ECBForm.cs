@@ -56,16 +56,16 @@ public partial class ECBForm : Form
                 string BerryName = sav.EBerryName;
 
                 Close();
-                _ = MessageBox.Show($"{string.Format(TranslationStrings.FileImported, TranslationStrings.ECardBerry)}\n\n\"{BerryName}\"", TranslationStrings.Success, MessageBoxButtons.OK, MessageBoxIcon.Information);
+                Message.ShowFileImported(TranslationStrings.ECardBerry, BerryName);
             }
             catch
             {
-                _ = MessageBox.Show(string.Format(TranslationStrings.ReadFileError, TranslationStrings.ECardBerry), TranslationStrings.Error, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                Message.ShowFileReadError(TranslationStrings.ECardBerry);
             }
         }
         else
         {
-            _ = MessageBox.Show(string.Format(TranslationStrings.InvalidFileSize, fileSize, sav.GetECBFileSize()), TranslationStrings.Error, MessageBoxButtons.OK, MessageBoxIcon.Error);
+            Message.ShowInvalidFileSize(fileSize, sav.GetECBFileSize());
         }
     }
 
@@ -76,11 +76,11 @@ public partial class ECBForm : Form
             File.WriteAllBytes(fileName, ecb);
 
             Close();
-            _ = MessageBox.Show(string.Format(TranslationStrings.FileExported, TranslationStrings.ECardBerry, fileName), TranslationStrings.Success, MessageBoxButtons.OK, MessageBoxIcon.Information);
+            Message.ShowFileExported(TranslationStrings.ECardBerry, fileName);
         }
         catch
         {
-            _ = MessageBox.Show(string.Format(TranslationStrings.WriteFileError, TranslationStrings.ECardBerry), TranslationStrings.Error, MessageBoxButtons.OK, MessageBoxIcon.Error);
+            Message.ShowFileWriteError(TranslationStrings.ECardBerry);
         }
     }
 
