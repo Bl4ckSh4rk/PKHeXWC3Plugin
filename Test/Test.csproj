@@ -15,14 +15,11 @@
     <PackageReference Include="NUnit3TestAdapter" Version="4.2.1" />
     <PackageReference Include="NUnit.Analyzers" Version="3.6.1" />
     <PackageReference Include="coverlet.collector" Version="6.0.0" />
+    <PackageReference Include="PKHeX.Core" Version="23.10.12" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\WC3Plugin\WC3Plugin.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <PackageReference Include="PKHeX.Core" Version="23.8.23" />
   </ItemGroup>
 
 </Project>
