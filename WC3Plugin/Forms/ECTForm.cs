@@ -15,7 +15,7 @@ public partial class ECTForm : Form
 
         InitializeComponent();
 
-        if (!(ect = sav.ExportECT()).IsEmpty())
+        if (!MysteryDataUtil.IsEmpty(ect = sav.ExportECT()))
         {
             TitleBox.Text = StringConverter3.GetString(ect.AsSpan(4, sav.Japanese ? 5 : 7), sav.Japanese).Trim();
             ECTExportButton.Enabled= true;

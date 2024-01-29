@@ -1,26 +1,14 @@
-﻿using PKHeX.Core;
+﻿namespace WC3Plugin;
 
-namespace WC3Plugin;
-
-// Partially based on PKHeX's LocalizationUtil, thanks Kaphotics!
-// https://github.com/kwsch/PKHeX/blob/master/PKHeX.Core/Util/ResourceUtil.cs
-// https://github.com/kwsch/PKHeX/blob/master/PKHeX.Core/Util/Localization/LocalizationUtil.cs
 public static class LocalizationUtil
 {
     private const string TranslationSplitter = " = ";
-    private const string StringCachePrefix = nameof(WC3Plugin); // to distinguish from cashed PKHeX resources
+    private const string LineSplitter = "\n";
 
     public static void SetLocalization(string currentCultureCode)
     {
-        SetLocalization(GetStringList($"lang_{currentCultureCode}"));
-    }
-
-    private static string[] GetStringList(string fileName)
-    {
-        if (Util.IsStringListCached($"{StringCachePrefix}_{fileName}", out var result))
-            return result;
-        var txt = Properties.Resources.ResourceManager.GetObject(fileName)?.ToString();
-        return Util.LoadStringList($"{StringCachePrefix}_{fileName}", txt);
+        var txt = Properties.Resources.ResourceManager.GetObject($"lang_{currentCultureCode}")?.ToString();
+        SetLocalization(txt == null ? [] : txt.Split(LineSplitter, StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries));
     }
 
     private static void SetLocalization(IReadOnlyCollection<string> lines)

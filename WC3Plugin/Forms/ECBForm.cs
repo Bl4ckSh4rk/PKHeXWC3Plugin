@@ -15,7 +15,7 @@ public partial class ECBForm : Form
 
         InitializeComponent();
 
-        if (!(ecb = sav.ExportECB()).IsEmpty())
+        if (!MysteryDataUtil.IsEmpty(ecb = sav.ExportECB()))
         {
             TitleBox.Text = sav.EBerryName.Trim();
             ECBExportButton.Enabled = true;

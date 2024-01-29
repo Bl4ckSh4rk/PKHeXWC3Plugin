@@ -50,7 +50,7 @@ public static class MysteryDataUtil
     
     public static bool HasWC3(this SAV3 sav)
     {
-        return sav is IGen3Wonder wonder && !wonder.WonderCard.Data.IsEmpty();
+        return sav is IGen3Wonder wonder && !IsEmpty(wonder.WonderCard.Data);
     }
     
     public static int GetWC3FileSize(this SAV3 sav) => GetWC3ScriptOffset(sav) + MysteryEvent3.SIZE;
@@ -93,8 +93,8 @@ public static class MysteryDataUtil
     public static bool HasME3(this SAV3 sav)
     {
         return sav is SAV3RS
-            ? !sav.MysteryData.Data.IsEmpty()
-            : sav is IGen3Wonder wonder && !sav.MysteryData.Data.IsEmpty() && wonder.WonderCard.Data.IsEmpty();
+            ? !IsEmpty(sav.MysteryData.Data)
+            : sav is IGen3Wonder wonder && !IsEmpty(sav.MysteryData.Data) && IsEmpty(wonder.WonderCard.Data);
     }
     #endregion ME3
 
@@ -122,7 +122,7 @@ public static class MysteryDataUtil
     
     public static bool HasWN3(this SAV3 sav)
     {
-        return sav is IGen3Wonder wonder && !wonder.WonderNews.Data.IsEmpty();
+        return sav is IGen3Wonder wonder && !IsEmpty(wonder.WonderNews.Data);
     }
     
     public static int GetWN3FileSize(this SAV3 sav) => sav.Japanese ? WonderNews3.SIZE_JAP : WonderNews3.SIZE;
@@ -141,7 +141,7 @@ public static class MysteryDataUtil
     
     public static bool HasECT(this SAV3 sav)
     {
-        return !sav.EReaderTrainer().IsEmpty();
+        return !IsEmpty(sav.EReaderTrainer());
     }
     
     public static int GetECTFileSize(this SAV3 _) => ECT_SIZE;
@@ -158,10 +158,10 @@ public static class MysteryDataUtil
 
         for (int i = 0; i < ECT_SIZE - 4; i += 4)
         {
-            chk += data[i] + (uint)(data[i + 1] << 8) + (uint)(data[i + 2] << 16) + (uint)(data[i + 3] << 24);
+            chk += ReadUInt32LittleEndian(data.AsSpan(i));
         }
 
-        return chk & 0xFFFFFFFF;
+        return chk;
     }
     
     private const int ECT_SIZE = 188;
@@ -181,7 +181,7 @@ public static class MysteryDataUtil
     
     public static bool HasECB(this SAV3 sav)
     {
-        return !sav.EReaderBerry().IsEmpty();
+        return !IsEmpty(sav.EReaderBerry());
     }
     
     public static int GetECBFileSize(this SAV3 sav) => sav is SAV3RS ? ECB_SIZE_RS : ECB_SIZE_FRLGE;
@@ -256,16 +256,7 @@ public static class MysteryDataUtil
     #endregion RM3
 
     #region Utility
-    internal static bool IsEmpty(this byte[] data)
-    {
-        foreach (byte b in data)
-        {
-            if (b is not (0 or 0xFF))
-                return false;
-        }
-        return true;
-    }
-    internal static bool IsEmpty(this Span<byte> data)
+    internal static bool IsEmpty(Span<byte> data)
     {
         foreach (byte b in data)
         {

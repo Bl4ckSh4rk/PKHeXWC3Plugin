@@ -1,9 +1,9 @@
 ﻿PluginName = WC3 Plugin
-MysteryGift = Mystery Gift
-MysteryEvent = Mystery Event
+MysteryGift = Geheimgeschenk
+MysteryEvent = Geheimgeschehen
 ECardTrainer = e-Card Trainer
-ECardBerry = e-Card Berry
-WonderNews = Wonder News
+ECardBerry = e-Card Beere
+WonderNews = Wundernachricht
 Import = Importieren
 Export = Exportieren
 AllFiles = Alle Dateien
