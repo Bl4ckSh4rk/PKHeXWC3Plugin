@@ -12,8 +12,7 @@ public partial class RM3Form : Form
 
         InitializeComponent();
 
-        List<ComboItem> items = sav.GetRecordMixingItemDataSource();
-        ItemComboBox.DataSource = new BindingSource(items, null);
+        ItemComboBox.DataSource = new BindingSource(sav.GetRecordMixingItemDataSource(), null);
         ItemComboBox.DisplayMember = "Text";
         ItemComboBox.ValueMember = "Value";
 
@@ -23,12 +22,13 @@ public partial class RM3Form : Form
 
     private void SaveButton_Click(object sender, EventArgs e)
     {
-        sav.SetRecordMixing((ushort)((ushort)ItemComboBox.SelectedValue! & 0xFFFF), (byte)CountBox.Value);
+        sav.SetRecordMixing((ushort)((ComboItem)ItemComboBox.SelectedItem!).Value, (byte)CountBox.Value);
+        Close();
     }
 
     private void ItemComboBox_SelectedIndexChanged(object sender, EventArgs e)
     {
-        ushort selected = (ushort)((int)ItemComboBox.SelectedValue! & 0xFFFF);
+        ushort selected = (ushort)((ComboItem)ItemComboBox.SelectedItem!).Value;
         if (selected == 0)
         {
             CountBox.Value = 0;

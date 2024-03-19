@@ -171,7 +171,7 @@ public static class MysteryDataUtil
     public static void ImportECB(this SAV3 sav, byte[] data)
     {
         FixECBChecksum(data).CopyTo(sav.EReaderBerry());
-        sav.SetWork((sav is SAV3RS or SAV3E) ? VAR_ENIGMA_BERRY_AVAILABLE_RSE : VAR_ENIGMA_BERRY_AVAILABLE_FRLG, 1);
+        sav.SetWork((sav is IGen3Hoenn) ? VAR_ENIGMA_BERRY_AVAILABLE_RSE : VAR_ENIGMA_BERRY_AVAILABLE_FRLG, 1);
     }
     
     public static byte[] ExportECB(this SAV3 sav)
@@ -248,7 +248,8 @@ public static class MysteryDataUtil
         return storage.GetItems(InventoryType.PCItems).Contains(item);
     }
 
-    public static List<ComboItem> GetRecordMixingItemDataSource(this SAV3 sav) => [
+    public static IReadOnlyList<ComboItem> GetRecordMixingItemDataSource(this SAV3 sav) =>
+    [
         .. GameInfo.FilteredSources.Items,
         new(GameInfo.Strings.GetItemStrings(sav.Context, sav.Version)[EONTICKET], EONTICKET),
     ];
