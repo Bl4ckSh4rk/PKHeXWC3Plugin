@@ -18,7 +18,7 @@ public partial class ECTForm : Form
         if (!MysteryDataUtil.IsEmpty(ect = sav.ExportECT()))
         {
             TitleBox.Text = StringConverter3.GetString(ect.AsSpan(4, sav.Japanese ? 5 : 7), sav.Japanese).Trim();
-            ECTExportButton.Enabled= true;
+            ECTExportButton.Enabled = true;
         }
     }
 
@@ -53,6 +53,7 @@ public partial class ECTForm : Form
             try
             {
                 sav.ImportECB(File.ReadAllBytes(fileName));
+                sav.State.Edited = true;
                 string TrainerName = StringConverter3.GetString(ect.AsSpan(4, sav.Japanese ? 5 : 7), sav.Japanese).Trim();
 
                 Close();

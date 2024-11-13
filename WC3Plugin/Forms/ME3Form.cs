@@ -47,8 +47,8 @@ public partial class ME3Form : Form
         {
             try
             {
-                byte[] me3 = File.ReadAllBytes(fileName);
-                sav.ImportME3(me3);
+                sav.ImportME3(File.ReadAllBytes(fileName));
+                sav.State.Edited = true;
 
                 Close();
                 Message.ShowFileImported(TranslationStrings.MysteryEvent);

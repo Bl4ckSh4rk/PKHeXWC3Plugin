@@ -1,14 +1,16 @@
-name: Build
+name: PR Test
 
 on:
-  push:
-    branches: [ master ]
+  pull_request:
+    types:
+      - opened
+      - synchronize
     paths-ignore:
-    - '.github/**'
-    - '*.md'
+      - '.github/**'
+      - '*.md'
 
 jobs:
-  build:
+  build-and-test:
     runs-on: windows-latest
 
     env:
@@ -29,9 +31,3 @@ jobs:
       run: dotnet build ${{ env.PROJECT_NAME }} --no-restore --configuration Release -o ${{ env.OUT_DIR }}
     - name: Run Tests
       run: dotnet test --no-restore --verbosity normal
-    - name: Upload Artifacts
-      uses: actions/upload-artifact@v4
-      with:
-        name: ${{ env.PROJECT_NAME }}
-        path: ${{ env.OUT_DIR }}/*.dll
-        if-no-files-found: error

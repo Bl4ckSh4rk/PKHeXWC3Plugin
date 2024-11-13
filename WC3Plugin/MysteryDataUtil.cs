@@ -35,7 +35,7 @@ public static class MysteryDataUtil
         wonder.WonderCardExtra = wc3Extra;
         sav.MysteryData = me3;
     }
-    
+
     public static byte[] ExportWC3(this SAV3 sav)
     {
         if (sav is not IGen3Wonder wonder)
@@ -47,14 +47,14 @@ public static class MysteryDataUtil
         sav.MysteryData.Data.CopyTo(data, GetWC3ScriptOffset(sav));
         return data;
     }
-    
+
     public static bool HasWC3(this SAV3 sav)
     {
         return sav is IGen3Wonder wonder && !IsEmpty(wonder.WonderCard.Data);
     }
-    
+
     public static int GetWC3FileSize(this SAV3 sav) => GetWC3ScriptOffset(sav) + MysteryEvent3.SIZE;
-    
+
     private static int GetWC3CardSize(this SAV3 sav) => sav.Japanese ? WonderCard3.SIZE_JAP : WonderCard3.SIZE;
     private static int GetWC3ScriptOffset(this SAV3 sav) => GetWC3CardSize(sav) + (WonderCard3Extra.SIZE * 2);
     #endregion WC3
@@ -84,12 +84,12 @@ public static class MysteryDataUtil
             hoenn.RecordMixingGift = rm3;
         }
     }
-    
+
     public static byte[] ExportME3(this SAV3 sav)
     {
         return sav.MysteryData.Data;
     }
-    
+
     public static bool HasME3(this SAV3 sav)
     {
         return sav is SAV3RS
@@ -109,7 +109,7 @@ public static class MysteryDataUtil
 
         wonder.WonderNews = wn3;
     }
-    
+
     public static byte[] ExportWN3(this SAV3 sav)
     {
         if (sav is not IGen3Wonder wonder)
@@ -119,12 +119,12 @@ public static class MysteryDataUtil
         wonder.WonderNews.Data.CopyTo(data, 0);
         return data;
     }
-    
+
     public static bool HasWN3(this SAV3 sav)
     {
         return sav is IGen3Wonder wonder && !IsEmpty(wonder.WonderNews.Data);
     }
-    
+
     public static int GetWN3FileSize(this SAV3 sav) => sav.Japanese ? WonderNews3.SIZE_JAP : WonderNews3.SIZE;
     #endregion WN3
 
@@ -133,25 +133,25 @@ public static class MysteryDataUtil
     {
         FixECTChecksum(data).CopyTo(sav.EReaderTrainer());
     }
-    
+
     public static byte[] ExportECT(this SAV3 sav)
     {
         return sav.EReaderTrainer().ToArray();
     }
-    
+
     public static bool HasECT(this SAV3 sav)
     {
         return !IsEmpty(sav.EReaderTrainer());
     }
-    
+
     public static int GetECTFileSize(this SAV3 _) => ECT_SIZE;
-    
+
     private static byte[] FixECTChecksum(byte[] data)
     {
         WriteUInt32LittleEndian(data.AsSpan(ECT_SIZE - 4), GetECTChecksum(data));
         return data;
     }
-    
+
     private static uint GetECTChecksum(byte[] data)
     {
         uint chk = 0;
@@ -163,7 +163,7 @@ public static class MysteryDataUtil
 
         return chk;
     }
-    
+
     private const int ECT_SIZE = 188;
     #endregion ECT
 
@@ -173,19 +173,19 @@ public static class MysteryDataUtil
         FixECBChecksum(data).CopyTo(sav.EReaderBerry());
         sav.SetWork((sav is IGen3Hoenn) ? VAR_ENIGMA_BERRY_AVAILABLE_RSE : VAR_ENIGMA_BERRY_AVAILABLE_FRLG, 1);
     }
-    
+
     public static byte[] ExportECB(this SAV3 sav)
     {
         return sav.EReaderBerry().ToArray();
     }
-    
+
     public static bool HasECB(this SAV3 sav)
     {
         return !IsEmpty(sav.EReaderBerry());
     }
-    
+
     public static int GetECBFileSize(this SAV3 sav) => sav is SAV3RS ? ECB_SIZE_RS : ECB_SIZE_FRLGE;
-    
+
     private static byte[] FixECBChecksum(byte[] data)
     {
         WriteUInt16LittleEndian(data.AsSpan(data.Length - 4), GetECBChecksum(data));

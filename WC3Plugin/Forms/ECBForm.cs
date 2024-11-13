@@ -53,6 +53,7 @@ public partial class ECBForm : Form
             try
             {
                 sav.ImportECB(File.ReadAllBytes(fileName));
+                sav.State.Edited = true;
                 string BerryName = sav.EBerryName;
 
                 Close();

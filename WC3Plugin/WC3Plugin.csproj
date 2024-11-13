@@ -2,16 +2,17 @@
 
   <PropertyGroup>
     <Description>WC3 Plugin</Description>
-    <FileVersion>2.2.2.0</FileVersion>
-    <TargetFramework>net8.0-windows</TargetFramework>
-    <LangVersion>12</LangVersion>
+    <Version>2.3.0</Version>
+    <TargetFramework>net9.0-windows</TargetFramework>
+    <LangVersion>13</LangVersion>
     <UseWindowsForms>true</UseWindowsForms>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
+    <NeutralLanguage>en</NeutralLanguage>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="PKHeX.Core" Version="24.3.10" />
+    <PackageReference Include="PKHeX.Core" Version="24.11.11" />
   </ItemGroup>
 
 </Project>

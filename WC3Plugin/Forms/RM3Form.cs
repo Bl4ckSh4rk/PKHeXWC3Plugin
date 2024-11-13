@@ -12,9 +12,9 @@ public partial class RM3Form : Form
 
         InitializeComponent();
 
-        ItemComboBox.DataSource = new BindingSource(sav.GetRecordMixingItemDataSource(), null);
-        ItemComboBox.DisplayMember = "Text";
-        ItemComboBox.ValueMember = "Value";
+        ItemComboBox.DataSource = new BindingSource(sav.GetRecordMixingItemDataSource(), string.Empty);
+        ItemComboBox.DisplayMember = nameof(ComboItem.Text);
+        ItemComboBox.ValueMember = nameof(ComboItem.Value);
 
         ItemComboBox.SelectedValue = sav.IsValidForRecordMixing(((IGen3Hoenn)sav).RecordMixingGift.Item) ? ((IGen3Hoenn)sav).RecordMixingGift.Item : 0;
         CountBox.Value = ((IGen3Hoenn)sav).RecordMixingGift.Count;
@@ -23,6 +23,7 @@ public partial class RM3Form : Form
     private void SaveButton_Click(object sender, EventArgs e)
     {
         sav.SetRecordMixing((ushort)((ComboItem)ItemComboBox.SelectedItem!).Value, (byte)CountBox.Value);
+        sav.State.Edited = true;
         Close();
     }
 

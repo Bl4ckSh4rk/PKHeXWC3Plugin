@@ -1,152 +1,151 @@
-using NUnit.Framework;
+using Xunit;
 using PKHeX.Core;
 using WC3Plugin;
 
-namespace Test
+namespace Test;
+
+public class ECBTest
 {
-    public class ECBTest
+    [Fact]
+    public void ImportEmeraldEnglish()
     {
-        [Test]
-        public void ImportEmeraldEnglish()
-        {
-            byte[] clean = File.ReadAllBytes($"{Data.CleanSavesDir}{Data.EM_EN}");
-            byte[] expected = File.ReadAllBytes($"{Data.ExpectedSavesDir}{Data.EM_EN_ECB}");
-            byte[] ecb = File.ReadAllBytes($"{Data.MysteryDataDir}{Data.Berry_EM_EN}");
+        byte[] clean = File.ReadAllBytes($"{Data.CleanSavesDir}{Data.EM_EN}");
+        byte[] expected = File.ReadAllBytes($"{Data.ExpectedSavesDir}{Data.EM_EN_ECB}");
+        byte[] ecb = File.ReadAllBytes($"{Data.MysteryDataDir}{Data.Berry_EM_EN}");
 
-            SAV3E sav = new(clean);
-            sav.ImportECB(ecb);
+        SAV3E sav = new(clean);
+        sav.ImportECB(ecb);
 
-            Assert.That(sav.HasECB(), Is.True);
-            Assert.That(sav.Write(), Is.EqualTo(expected));
-        }
-        [Test]
-        public void ImportEmeraldJapanese()
-        {
-            byte[] clean = File.ReadAllBytes($"{Data.CleanSavesDir}{Data.EM_JP}");
-            byte[] expected = File.ReadAllBytes($"{Data.ExpectedSavesDir}{Data.EM_JP_ECB}");
-            byte[] ecb = File.ReadAllBytes($"{Data.MysteryDataDir}{Data.Berry_EM_EN}");
+        Assert.True(sav.HasECB());
+        Assert.Equal(sav.Write(), expected);
+    }
+    [Fact]
+    public void ImportEmeraldJapanese()
+    {
+        byte[] clean = File.ReadAllBytes($"{Data.CleanSavesDir}{Data.EM_JP}");
+        byte[] expected = File.ReadAllBytes($"{Data.ExpectedSavesDir}{Data.EM_JP_ECB}");
+        byte[] ecb = File.ReadAllBytes($"{Data.MysteryDataDir}{Data.Berry_EM_EN}");
 
-            SAV3E sav = new(clean);
-            sav.ImportECB(ecb);
+        SAV3E sav = new(clean);
+        sav.ImportECB(ecb);
 
-            Assert.That(sav.HasECB(), Is.True);
-            Assert.That(sav.Write(), Is.EqualTo(expected));
-        }
+        Assert.True(sav.HasECB());
+        Assert.Equal(sav.Write(), expected);
+    }
 
-        [Test]
-        public void ImportRSEnglish()
-        {
-            byte[] clean = File.ReadAllBytes($"{Data.CleanSavesDir}{Data.RS_EN}");
-            byte[] expected = File.ReadAllBytes($"{Data.ExpectedSavesDir}{Data.RS_EN_ECB}");
-            byte[] ecb = File.ReadAllBytes($"{Data.MysteryDataDir}{Data.Berry_RS_EN}");
+    [Fact]
+    public void ImportRSEnglish()
+    {
+        byte[] clean = File.ReadAllBytes($"{Data.CleanSavesDir}{Data.RS_EN}");
+        byte[] expected = File.ReadAllBytes($"{Data.ExpectedSavesDir}{Data.RS_EN_ECB}");
+        byte[] ecb = File.ReadAllBytes($"{Data.MysteryDataDir}{Data.Berry_RS_EN}");
 
-            SAV3RS sav = new(clean);
-            sav.ImportECB(ecb);
+        SAV3RS sav = new(clean);
+        sav.ImportECB(ecb);
 
-            Assert.That(sav.HasECB(), Is.True);
-            Assert.That(sav.Write(), Is.EqualTo(expected));
-        }
-        [Test]
-        public void ImportRSJapanese()
-        {
-            byte[] clean = File.ReadAllBytes($"{Data.CleanSavesDir}{Data.RS_JP}");
-            byte[] expected = File.ReadAllBytes($"{Data.ExpectedSavesDir}{Data.RS_JP_ECB}");
-            byte[] ecb = File.ReadAllBytes($"{Data.MysteryDataDir}{Data.Berry_RS_EN}");
+        Assert.True(sav.HasECB());
+        Assert.Equal(sav.Write(), expected);
+    }
+    [Fact]
+    public void ImportRSJapanese()
+    {
+        byte[] clean = File.ReadAllBytes($"{Data.CleanSavesDir}{Data.RS_JP}");
+        byte[] expected = File.ReadAllBytes($"{Data.ExpectedSavesDir}{Data.RS_JP_ECB}");
+        byte[] ecb = File.ReadAllBytes($"{Data.MysteryDataDir}{Data.Berry_RS_EN}");
 
-            SAV3RS sav = new(clean);
-            sav.ImportECB(ecb);
+        SAV3RS sav = new(clean);
+        sav.ImportECB(ecb);
 
-            Assert.That(sav.HasECB(), Is.True);
-            Assert.That(sav.Write(), Is.EqualTo(expected));
-        }
+        Assert.True(sav.HasECB());
+        Assert.Equal(sav.Write(), expected);
+    }
 
-        [Test]
-        public void ImportFRLGEnglish()
-        {
-            byte[] clean = File.ReadAllBytes($"{Data.CleanSavesDir}{Data.FRLG_EN}");
-            byte[] expected = File.ReadAllBytes($"{Data.ExpectedSavesDir}{Data.FRLG_EN_ECB}");
-            byte[] ecb = File.ReadAllBytes($"{Data.MysteryDataDir}{Data.Berry_EM_EN}");
+    [Fact]
+    public void ImportFRLGEnglish()
+    {
+        byte[] clean = File.ReadAllBytes($"{Data.CleanSavesDir}{Data.FRLG_EN}");
+        byte[] expected = File.ReadAllBytes($"{Data.ExpectedSavesDir}{Data.FRLG_EN_ECB}");
+        byte[] ecb = File.ReadAllBytes($"{Data.MysteryDataDir}{Data.Berry_EM_EN}");
 
-            SAV3FRLG sav = new(clean);
-            sav.ImportECB(ecb);
+        SAV3FRLG sav = new(clean);
+        sav.ImportECB(ecb);
 
-            Assert.That(sav.HasECB(), Is.True);
-            Assert.That(sav.Write(), Is.EqualTo(expected));
-        }
-        [Test]
-        public void ImportFRLGJapanese()
-        {
-            byte[] clean = File.ReadAllBytes($"{Data.CleanSavesDir}{Data.FRLG_JP}");
-            byte[] expected = File.ReadAllBytes($"{Data.ExpectedSavesDir}{Data.FRLG_JP_ECB}");
-            byte[] ecb = File.ReadAllBytes($"{Data.MysteryDataDir}{Data.Berry_EM_EN}");
+        Assert.True(sav.HasECB());
+        Assert.Equal(sav.Write(), expected);
+    }
+    [Fact]
+    public void ImportFRLGJapanese()
+    {
+        byte[] clean = File.ReadAllBytes($"{Data.CleanSavesDir}{Data.FRLG_JP}");
+        byte[] expected = File.ReadAllBytes($"{Data.ExpectedSavesDir}{Data.FRLG_JP_ECB}");
+        byte[] ecb = File.ReadAllBytes($"{Data.MysteryDataDir}{Data.Berry_EM_EN}");
 
-            SAV3FRLG sav = new(clean);
-            sav.ImportECB(ecb);
+        SAV3FRLG sav = new(clean);
+        sav.ImportECB(ecb);
 
-            Assert.That(sav.HasECB(), Is.True);
-            Assert.That(sav.Write(), Is.EqualTo(expected));
-        }
+        Assert.True(sav.HasECB());
+        Assert.Equal(sav.Write(), expected);
+    }
 
 
-        [Test]
-        public void ExportEmeraldEnglish()
-        {
-            byte[] sav_ecb = File.ReadAllBytes($"{Data.ExpectedSavesDir}{Data.EM_EN_ECB}");
-            byte[] ecb = File.ReadAllBytes($"{Data.MysteryDataDir}{Data.Berry_EM_EN}");
+    [Fact]
+    public void ExportEmeraldEnglish()
+    {
+        byte[] sav_ecb = File.ReadAllBytes($"{Data.ExpectedSavesDir}{Data.EM_EN_ECB}");
+        byte[] ecb = File.ReadAllBytes($"{Data.MysteryDataDir}{Data.Berry_EM_EN}");
 
-            SAV3E sav = new(sav_ecb);
+        SAV3E sav = new(sav_ecb);
 
-            Assert.That(ecb, Is.EqualTo(sav.ExportECB()));
-        }
-        [Test]
-        public void ExportEmeraldJapanese()
-        {
-            byte[] sav_ecb = File.ReadAllBytes($"{Data.ExpectedSavesDir}{Data.EM_JP_ECB}");
-            byte[] ecb = File.ReadAllBytes($"{Data.MysteryDataDir}{Data.Berry_EM_EN}");
+        Assert.Equal(ecb, sav.ExportECB());
+    }
+    [Fact]
+    public void ExportEmeraldJapanese()
+    {
+        byte[] sav_ecb = File.ReadAllBytes($"{Data.ExpectedSavesDir}{Data.EM_JP_ECB}");
+        byte[] ecb = File.ReadAllBytes($"{Data.MysteryDataDir}{Data.Berry_EM_EN}");
 
-            SAV3E sav = new(sav_ecb);
+        SAV3E sav = new(sav_ecb);
 
-            Assert.That(ecb, Is.EqualTo(sav.ExportECB()));
-        }
-        [Test]
-        public void ExportRSEnglish()
-        {
-            byte[] sav_ecb = File.ReadAllBytes($"{Data.ExpectedSavesDir}{Data.RS_EN_ECB}");
-            byte[] ecb = File.ReadAllBytes($"{Data.MysteryDataDir}{Data.Berry_RS_EN}");
+        Assert.Equal(ecb, sav.ExportECB());
+    }
+    [Fact]
+    public void ExportRSEnglish()
+    {
+        byte[] sav_ecb = File.ReadAllBytes($"{Data.ExpectedSavesDir}{Data.RS_EN_ECB}");
+        byte[] ecb = File.ReadAllBytes($"{Data.MysteryDataDir}{Data.Berry_RS_EN}");
 
-            SAV3RS sav = new(sav_ecb);
+        SAV3RS sav = new(sav_ecb);
 
-            Assert.That(ecb, Is.EqualTo(sav.ExportECB()));
-        }
-        [Test]
-        public void ExportRSJapanese()
-        {
-            byte[] sav_ecb = File.ReadAllBytes($"{Data.ExpectedSavesDir}{Data.RS_JP_ECB}");
-            byte[] ecb = File.ReadAllBytes($"{Data.MysteryDataDir}{Data.Berry_RS_EN}");
+        Assert.Equal(ecb, sav.ExportECB());
+    }
+    [Fact]
+    public void ExportRSJapanese()
+    {
+        byte[] sav_ecb = File.ReadAllBytes($"{Data.ExpectedSavesDir}{Data.RS_JP_ECB}");
+        byte[] ecb = File.ReadAllBytes($"{Data.MysteryDataDir}{Data.Berry_RS_EN}");
 
-            SAV3RS sav = new(sav_ecb);
+        SAV3RS sav = new(sav_ecb);
 
-            Assert.That(ecb, Is.EqualTo(sav.ExportECB()));
-        }
-        [Test]
-        public void ExportFRLGEnglish()
-        {
-            byte[] sav_ecb = File.ReadAllBytes($"{Data.ExpectedSavesDir}{Data.FRLG_EN_ECB}");
-            byte[] ecb = File.ReadAllBytes($"{Data.MysteryDataDir}{Data.Berry_EM_EN}");
+        Assert.Equal(ecb, sav.ExportECB());
+    }
+    [Fact]
+    public void ExportFRLGEnglish()
+    {
+        byte[] sav_ecb = File.ReadAllBytes($"{Data.ExpectedSavesDir}{Data.FRLG_EN_ECB}");
+        byte[] ecb = File.ReadAllBytes($"{Data.MysteryDataDir}{Data.Berry_EM_EN}");
 
-            SAV3FRLG sav = new(sav_ecb);
+        SAV3FRLG sav = new(sav_ecb);
 
-            Assert.That(ecb, Is.EqualTo(sav.ExportECB()));
-        }
-        [Test]
-        public void ExportFRLGJapanese()
-        {
-            byte[] sav_ecb = File.ReadAllBytes($"{Data.ExpectedSavesDir}{Data.FRLG_JP_ECB}");
-            byte[] ecb = File.ReadAllBytes($"{Data.MysteryDataDir}{Data.Berry_EM_EN}");
+        Assert.Equal(ecb, sav.ExportECB());
+    }
+    [Fact]
+    public void ExportFRLGJapanese()
+    {
+        byte[] sav_ecb = File.ReadAllBytes($"{Data.ExpectedSavesDir}{Data.FRLG_JP_ECB}");
+        byte[] ecb = File.ReadAllBytes($"{Data.MysteryDataDir}{Data.Berry_EM_EN}");
 
-            SAV3FRLG sav = new(sav_ecb);
+        SAV3FRLG sav = new(sav_ecb);
 
-            Assert.That(ecb, Is.EqualTo(sav.ExportECB()));
-        }
+        Assert.Equal(ecb, sav.ExportECB());
     }
 }

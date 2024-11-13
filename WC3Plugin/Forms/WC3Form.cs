@@ -51,8 +51,8 @@ public partial class WC3Form : Form
         {
             try
             {
-                byte[] wc3 = File.ReadAllBytes(fileName);
-                sav.ImportWC3(wc3);
+                sav.ImportWC3(File.ReadAllBytes(fileName));
+                sav.State.Edited = true;
 
                 Close();
                 Message.ShowFileImported(TranslationStrings.MysteryGift, ((IGen3Wonder)sav).WonderCard.Title.Trim());

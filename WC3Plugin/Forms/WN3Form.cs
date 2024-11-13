@@ -51,11 +51,11 @@ public partial class WN3Form : Form
         {
             try
             {
-                byte[] wn3 = File.ReadAllBytes(fileName);
-                sav.ImportECB(wn3);
+                sav.ImportECB(File.ReadAllBytes(fileName));
+                sav.State.Edited = true;
 
                 Close();
-                Message.ShowFileImported(TranslationStrings.WonderNews,((IGen3Wonder)sav).WonderNews.Title.Trim());
+                Message.ShowFileImported(TranslationStrings.WonderNews, ((IGen3Wonder)sav).WonderNews.Title.Trim());
             }
             catch
             {

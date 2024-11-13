@@ -2,7 +2,7 @@
 
 namespace WC3Plugin;
 
-public class WC3Plugin : IPlugin
+public sealed class WC3Plugin : IPlugin
 {
     public string Name => nameof(WC3Plugin);
     public int Priority => 1; // Loading order, lowest is first.
@@ -24,7 +24,7 @@ public class WC3Plugin : IPlugin
         {
             SaveFileEditor = (ISaveFileProvider)Array.Find(args, z => z is ISaveFileProvider)!;
 
-            LoadMenuStrip((ToolStrip)Array.Find(args, z => z is ToolStrip)!);
+            LoadMenuStrip((ToolStrip)Array.Find(args, static z => z is ToolStrip)!);
         }
     }
 
