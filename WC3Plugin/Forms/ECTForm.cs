@@ -5,7 +5,6 @@ namespace WC3Plugin;
 public partial class ECTForm : Form
 {
     private readonly SAV3 sav;
-    private readonly byte[] ect;
 
     private static readonly string FileFilter = $"{TranslationStrings.ECardTrainer} (*.ect)|*.ect|{TranslationStrings.AllFiles} (*.*)|*.*";
 
@@ -15,9 +14,9 @@ public partial class ECTForm : Form
 
         InitializeComponent();
 
-        if (!MysteryDataUtil.IsEmpty(ect = sav.ExportECT()))
+        if (!MysteryDataUtil.HasECT(sav))
         {
-            TitleBox.Text = StringConverter3.GetString(ect.AsSpan(4, sav.Japanese ? 5 : 7), sav.Japanese).Trim();
+            TitleBox.Text = StringConverter3.GetString(sav.ExportECT()[4 .. (4 + (sav.Japanese ? 5 : 7))], sav.Japanese).Trim();
             ECTExportButton.Enabled = true;
         }
     }
@@ -54,7 +53,7 @@ public partial class ECTForm : Form
             {
                 sav.ImportECB(File.ReadAllBytes(fileName));
                 sav.State.Edited = true;
-                string TrainerName = StringConverter3.GetString(ect.AsSpan(4, sav.Japanese ? 5 : 7), sav.Japanese).Trim();
+                string TrainerName = StringConverter3.GetString(sav.ExportECT()[4..(4 + (sav.Japanese ? 5 : 7))], sav.Japanese).Trim();
 
                 Close();
                 Message.ShowFileImported(TranslationStrings.ECardTrainer, TrainerName);
@@ -74,7 +73,7 @@ public partial class ECTForm : Form
     {
         try
         {
-            File.WriteAllBytes(fileName, ect);
+            File.WriteAllBytes(fileName, sav.ExportECB());
 
             Close();
             Message.ShowFileExported(TranslationStrings.ECardTrainer, fileName);

@@ -10,8 +10,8 @@ public static class MysteryDataUtil
      * File Size:       INT 0x58C,         JP 0x4E4
      * Offsets:
      * WonderCard:      INT 0     - 0x14F, JP 0     - 0x0A7
-     * WonderCardExtra: INT 0x150 - 0x177, JP 0x0A8 - 0x0CF
-     * Trainer IDs:     INT 0x178 - 0x19F, JP 0x0D0 - 0x0F7 // not handled
+     * WonderCardExtra: INT 0x150 - 0x177, JP 0x0A8 - 0x0CF // only for card type 2 (link stats)
+     * Trainer IDs:     INT 0x178 - 0x19F, JP 0x0D0 - 0x0F7 // only for card type 2 (link stats)
      * MysteryData:     INT 0x1A0 - 0x58B, JP 0x0F8 - 0x4E3
      */
     public static void ImportWC3(this SAV3 sav, byte[] data)
@@ -22,29 +22,42 @@ public static class MysteryDataUtil
         int CardSize = GetWC3CardSize(sav);
         int WC3ScriptOffset = GetWC3ScriptOffset(sav);
 
-        WonderCard3 wc3 = new(data[..CardSize]);
+        Memory<byte> memory = new(data);
+        WonderCard3 wc3 = new(memory[..CardSize]);
         wc3.FixChecksum();
-
-        WonderCard3Extra wc3Extra = new(data[CardSize..(CardSize + WonderCard3Extra.SIZE)]);
-        // wc3Extra.FixChecksum(); checksum is unused in the games
-
-        MysteryEvent3 me3 = new(data[WC3ScriptOffset..]);
-        me3.FixChecksum();
-
         wonder.WonderCard = wc3;
-        wonder.WonderCardExtra = wc3Extra;
+
+        if (wc3.Type == CARD_TYPE_LINK_STAT)
+        {
+            int wcExtraOffset = CardSize;
+            WonderCard3Extra wc3Extra = new(memory[wcExtraOffset..(wcExtraOffset + WonderCard3Extra.SIZE)]);
+            // wc3Extra.FixChecksum(); checksum is unused in the games
+            wonder.WonderCardExtra = wc3Extra;
+
+            // TODO: Handle import of Trainer IDs
+        }
+
+        MysteryEvent3 me3 = new(memory[WC3ScriptOffset..]);
+        me3.FixChecksum();
         sav.MysteryData = me3;
     }
 
-    public static byte[] ExportWC3(this SAV3 sav)
+    public static ReadOnlySpan<byte> ExportWC3(this SAV3 sav)
     {
         if (sav is not IGen3Wonder wonder)
             return [];
 
-        byte[] data = new byte[GetWC3FileSize(sav)];
-        wonder.WonderCard.Data.CopyTo(data, 0);
-        wonder.WonderCardExtra.Data.CopyTo(data, GetWC3CardSize(sav));
-        sav.MysteryData.Data.CopyTo(data, GetWC3ScriptOffset(sav));
+        Span<byte> data = new byte[GetWC3FileSize(sav)];
+        wonder.WonderCard.Data.CopyTo(data[0..]);
+
+        if (wonder.WonderCard.Type == CARD_TYPE_LINK_STAT)
+        {
+            wonder.WonderCardExtra.Data.CopyTo(data[GetWC3CardSize(sav)..]);
+
+            // TODO: Handle export of Trainer IDs
+        }
+
+        sav.MysteryData.Data.CopyTo(data[GetWC3ScriptOffset(sav)..]);
         return data;
     }
 
@@ -57,35 +70,37 @@ public static class MysteryDataUtil
 
     private static int GetWC3CardSize(this SAV3 sav) => sav.Japanese ? WonderCard3.SIZE_JAP : WonderCard3.SIZE;
     private static int GetWC3ScriptOffset(this SAV3 sav) => GetWC3CardSize(sav) + (WonderCard3Extra.SIZE * 2);
+    private const int CARD_TYPE_LINK_STAT = 2;
     #endregion WC3
 
     #region ME3
     public static void ImportME3(this SAV3 sav, byte[] data)
     {
+        Memory<byte> memory = new(data);
         Gen3MysteryData mystery;
         if (sav is IGen3Wonder wonder) // FRLGE
         {
             wonder.WonderCard = new(new byte[sav.Japanese ? WonderCard3.SIZE_JAP : WonderCard3.SIZE]);
 
-            mystery = new MysteryEvent3(data[..MysteryEvent3.SIZE]);
+            mystery = new MysteryEvent3(memory[..MysteryEvent3.SIZE]);
             ((MysteryEvent3)mystery).FixChecksum();
         }
         else // RS
         {
-            mystery = new MysteryEvent3RS(data[..MysteryEvent3.SIZE]);
+            mystery = new MysteryEvent3RS(memory[..MysteryEvent3.SIZE]);
             ((MysteryEvent3RS)mystery).FixChecksum();
         }
         sav.MysteryData = mystery;
 
         if (sav is IGen3Hoenn hoenn && data.Length == MysteryEvent3.SIZE + RecordMixing3Gift.SIZE)
         {
-            RecordMixing3Gift rm3 = new(data[MysteryEvent3.SIZE..]);
+            RecordMixing3Gift rm3 = new(memory[MysteryEvent3.SIZE..]);
             rm3.FixChecksum();
             hoenn.RecordMixingGift = rm3;
         }
     }
 
-    public static byte[] ExportME3(this SAV3 sav)
+    public static ReadOnlySpan<byte> ExportME3(this SAV3 sav)
     {
         return sav.MysteryData.Data;
     }
@@ -104,19 +119,20 @@ public static class MysteryDataUtil
         if (sav is not IGen3Wonder wonder)
             return;
 
-        WonderNews3 wn3 = new(data);
+        Memory<byte> memory = new(data);
+        WonderNews3 wn3 = new(memory);
         wn3.FixChecksum();
 
         wonder.WonderNews = wn3;
     }
 
-    public static byte[] ExportWN3(this SAV3 sav)
+    public static ReadOnlySpan<byte> ExportWN3(this SAV3 sav)
     {
         if (sav is not IGen3Wonder wonder)
             return [];
 
-        byte[] data = new byte[GetWN3FileSize(sav)];
-        wonder.WonderNews.Data.CopyTo(data, 0);
+        Span<byte> data = new byte[GetWN3FileSize(sav)];
+        wonder.WonderNews.Data.CopyTo(data[0..]);
         return data;
     }
 
@@ -134,9 +150,9 @@ public static class MysteryDataUtil
         FixECTChecksum(data).CopyTo(sav.EReaderTrainer());
     }
 
-    public static byte[] ExportECT(this SAV3 sav)
+    public static ReadOnlySpan<byte> ExportECT(this SAV3 sav)
     {
-        return sav.EReaderTrainer().ToArray();
+        return sav.EReaderTrainer();
     }
 
     public static bool HasECT(this SAV3 sav)
@@ -146,19 +162,19 @@ public static class MysteryDataUtil
 
     public static int GetECTFileSize(this SAV3 _) => ECT_SIZE;
 
-    private static byte[] FixECTChecksum(byte[] data)
+    private static Span<byte> FixECTChecksum(Span<byte> data)
     {
-        WriteUInt32LittleEndian(data.AsSpan(ECT_SIZE - 4), GetECTChecksum(data));
+        WriteUInt32LittleEndian(data[(ECT_SIZE - 4)..], GetECTChecksum(data));
         return data;
     }
 
-    private static uint GetECTChecksum(byte[] data)
+    private static uint GetECTChecksum(Span<byte> data)
     {
         uint chk = 0;
 
         for (int i = 0; i < ECT_SIZE - 4; i += 4)
         {
-            chk += ReadUInt32LittleEndian(data.AsSpan(i));
+            chk += ReadUInt32LittleEndian(data[i..]);
         }
 
         return chk;
@@ -174,9 +190,9 @@ public static class MysteryDataUtil
         sav.SetWork((sav is IGen3Hoenn) ? VAR_ENIGMA_BERRY_AVAILABLE_RSE : VAR_ENIGMA_BERRY_AVAILABLE_FRLG, 1);
     }
 
-    public static byte[] ExportECB(this SAV3 sav)
+    public static ReadOnlySpan<byte> ExportECB(this SAV3 sav)
     {
-        return sav.EReaderBerry().ToArray();
+        return sav.EReaderBerry();
     }
 
     public static bool HasECB(this SAV3 sav)
@@ -186,13 +202,13 @@ public static class MysteryDataUtil
 
     public static int GetECBFileSize(this SAV3 sav) => sav is SAV3RS ? ECB_SIZE_RS : ECB_SIZE_FRLGE;
 
-    private static byte[] FixECBChecksum(byte[] data)
+    private static ReadOnlySpan<byte> FixECBChecksum(Span<byte> data)
     {
-        WriteUInt16LittleEndian(data.AsSpan(data.Length - 4), GetECBChecksum(data));
+        WriteUInt16LittleEndian(data[(data.Length - 4)..], GetECBChecksum(data));
         return data;
     }
 
-    private static ushort GetECBChecksum(byte[] data)
+    private static ushort GetECBChecksum(ReadOnlySpan<byte> data)
     {
         ushort chk = 0;
 
@@ -227,7 +243,7 @@ public static class MysteryDataUtil
         if (sav is not IGen3Hoenn hoenn)
             return;
 
-        RecordMixing3Gift rm3 = new(hoenn.RecordMixingGift.Data)
+        RecordMixing3Gift rm3 = new(new byte[RecordMixing3Gift.SIZE])
         {
             Item = item,
             Count = (byte)(item == 0 ? 0 : count)
@@ -257,14 +273,6 @@ public static class MysteryDataUtil
     #endregion RM3
 
     #region Utility
-    internal static bool IsEmpty(Span<byte> data)
-    {
-        foreach (byte b in data)
-        {
-            if (b is not (0 or 0xFF))
-                return false;
-        }
-        return true;
-    }
+    private static bool IsEmpty(ReadOnlySpan<byte> data) => data.IndexOfAnyExcept<byte>(0, 0xFF) == -1;
     #endregion Utility
 }

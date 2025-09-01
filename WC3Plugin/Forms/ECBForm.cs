@@ -5,7 +5,6 @@ namespace WC3Plugin;
 public partial class ECBForm : Form
 {
     private readonly SAV3 sav;
-    private readonly byte[] ecb;
 
     private static readonly string FileFilter = $"{TranslationStrings.ECardBerry} (*.ecb)|*.ecb|{TranslationStrings.AllFiles} (*.*)|*.*";
 
@@ -15,7 +14,7 @@ public partial class ECBForm : Form
 
         InitializeComponent();
 
-        if (!MysteryDataUtil.IsEmpty(ecb = sav.ExportECB()))
+        if (!MysteryDataUtil.HasECB(sav))
         {
             TitleBox.Text = sav.EBerryName.Trim();
             ECBExportButton.Enabled = true;
@@ -74,7 +73,7 @@ public partial class ECBForm : Form
     {
         try
         {
-            File.WriteAllBytes(fileName, ecb);
+            File.WriteAllBytes(fileName, sav.ExportECB());
 
             Close();
             Message.ShowFileExported(TranslationStrings.ECardBerry, fileName);
