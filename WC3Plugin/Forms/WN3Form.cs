@@ -51,7 +51,7 @@ public partial class WN3Form : Form
         {
             try
             {
-                sav.ImportECB(File.ReadAllBytes(fileName));
+                sav.ImportWN3(File.ReadAllBytes(fileName));
                 sav.State.Edited = true;
 
                 Close();
