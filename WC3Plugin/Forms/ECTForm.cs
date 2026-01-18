@@ -51,7 +51,7 @@ public partial class ECTForm : Form
         {
             try
             {
-                sav.ImportECB(File.ReadAllBytes(fileName));
+                sav.ImportECT(File.ReadAllBytes(fileName));
                 sav.State.Edited = true;
                 string TrainerName = StringConverter3.GetString(sav.ExportECT()[4..(4 + (sav.Japanese ? 5 : 7))], sav.Japanese).Trim();
 
@@ -73,7 +73,7 @@ public partial class ECTForm : Form
     {
         try
         {
-            File.WriteAllBytes(fileName, sav.ExportECB());
+            File.WriteAllBytes(fileName, sav.ExportECT());
 
             Close();
             Message.ShowFileExported(TranslationStrings.ECardTrainer, fileName);
