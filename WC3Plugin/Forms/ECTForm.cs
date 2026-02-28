@@ -14,7 +14,7 @@ public partial class ECTForm : Form
 
         InitializeComponent();
 
-        if (!MysteryDataUtil.HasECT(sav))
+        if (MysteryDataUtil.HasECT(sav))
         {
             TitleBox.Text = StringConverter3.GetString(sav.ExportECT()[4 .. (4 + (sav.Japanese ? 5 : 7))], sav.Japanese).Trim();
             ECTExportButton.Enabled = true;

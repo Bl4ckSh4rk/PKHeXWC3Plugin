@@ -14,7 +14,7 @@ public partial class ECBForm : Form
 
         InitializeComponent();
 
-        if (!MysteryDataUtil.HasECB(sav))
+        if (MysteryDataUtil.HasECB(sav))
         {
             TitleBox.Text = sav.EBerryName.Trim();
             ECBExportButton.Enabled = true;
