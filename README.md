@@ -32,3 +32,4 @@ Put the plugin into the *plugins* folder in your PKHeX directory, then access it
 - ajxpk, Deoxyz, HaxAras (and everyone not explicitly mentioned here) for researching and preserving Gen. 3 Mystery Gifts!
 - Translators:
   - Chinese (CHT/CHS): wubinwww
+  - French: Youpileouf
